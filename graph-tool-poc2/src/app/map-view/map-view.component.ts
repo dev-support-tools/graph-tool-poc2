@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
 
 @Component({
   selector: 'app-map-view',
