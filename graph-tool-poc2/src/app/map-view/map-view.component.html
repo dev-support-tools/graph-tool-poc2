@@ -1,1 +1,62 @@
-<p>map-view works!</p>
+
+<div style="color: skyblue;">
+    <ngx-graph
+        [view]="[1000, 900]"
+        [nodes]="extendedNodes"
+        [links]="links"
+        (select)="onNodeSelect($event)"
+        [showMiniMap]="true"
+        [miniMapMaxHeight]="200"
+        [miniMapMaxWidth]="300"
+        [draggingEnabled]="false"
+    >
+    <ng-template #nodeTemplate let-node>
+        <!-- 選択状態の枠 -->
+        <svg:rect
+            [attr.visibility]="node.isSelected ? 'visible' : 'hidden'"
+            [attr.width]="node.dimension.width"
+            [attr.height]="node.dimension.height"
+            rx="5"
+            ry="5"
+            stroke-width="5"
+            stroke="blue"
+        />
+        <svg:g class="node"
+            [attr.visibility]="node.isSelected ? 'visible' : 'hidden'">
+            <svg:rect
+                width="20"
+                height="20"
+                [attr.x]="node.dimension.width + 5"
+                [attr.y]="node.dimension.height / 2 - 10"
+                stroke-width="3"
+                stroke="skyblue"
+                fill="white"
+                textContent="+"
+                (click)="onNodeAdd(node)"
+            />
+        </svg:g>
+            
+
+
+
+        <!-- 表示枠 -->
+        <svg:g class="node">
+            <svg:rect
+            [attr.width]="node.dimension.width"
+            [attr.height]="node.dimension.height"
+            rx="5"
+            ry="5"
+            fill="skyblue"
+            (keypress)="onNodeKeypress($event, node)"
+          />
+          <!-- ノードのラベル -->
+          <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+            {{node.label}}
+          </svg:text>
+
+
+        </svg:g>
+
+      </ng-template>
+    </ngx-graph>
+</div>
