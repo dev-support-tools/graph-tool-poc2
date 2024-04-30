@@ -62,7 +62,7 @@ export class MapViewComponent {
     let new_node_id = this.extendedNodes.length + 1;
     let new_node = {
       id: new_node_id.toString(),
-      label: 'New Node',
+      label: `New Node ${new_node_id.toString()}`,
       isSelected: false
     };
     this.extendedNodes.push(new_node);
