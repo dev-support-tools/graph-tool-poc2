@@ -71,13 +71,18 @@ export class MapViewComponent {
 
     
     let new_link_id = `from_${selected_node_id}_to_${new_node_id}`;
-    let new_link = {
+    let new_link: Edge = {
       id: new_link_id,
       source: selected_node_id,
       target: new_node_id.toString(),
-      label: 'is parent of'
+      label: 'is parent of',
     };
+    console.log(new_link);
+    this.extendedNodes = [...this.extendedNodes];
     this.links.push(new_link);
+    this.links = [...this.links, new_link];
+    console.log("--------------")
+    console.log(this.extendedNodes);
   }
 
   onKeypress($event: any) {
