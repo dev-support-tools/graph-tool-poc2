@@ -24,6 +24,10 @@ export class MapViewComponent {
     event.preventDefault();
   }
 
+  // 状態(選択、入力、コマンド入力中)
+  public isInputState = false;
+  private isAddCommand = false;
+
 
   public extendedNodes: NodeEx[] = [
     {
@@ -45,8 +49,11 @@ export class MapViewComponent {
   }
 
   onNodeSelect($event: any) {
-    console.log($event);
-
+    if (this.isAddCommand) {
+      this.addNode($event.id);
+      this.isAddCommand = false;
+      return;
+    }
     for(let i = 0; i < this.extendedNodes.length; i++){
       this.extendedNodes[i].isSelected = false;
       if (this.extendedNodes[i].id == $event.id){
@@ -55,21 +62,20 @@ export class MapViewComponent {
     }
   }
 
-  onNodeAdd($event: any) {
-    console.log($event);
+  private addNode(nodeId: number) {
+    for(let i = 0; i < this.extendedNodes.length; i++){
+      this.extendedNodes[i].isSelected = false;
+    }
     
-    let selected_node_id = $event.id;
+    let selected_node_id = nodeId.toString();
     let new_node_id = this.extendedNodes.length + 1;
     let new_node = {
       id: new_node_id.toString(),
       label: `New Node ${new_node_id.toString()}`,
-      isSelected: false
+      isSelected: true
     };
     this.extendedNodes.push(new_node);
-
-    this.extendedNodes = [...this.extendedNodes];
-
-    
+        
     let new_link_id = `from_${selected_node_id}_to_${new_node_id}`;
     let new_link: Edge = {
       id: new_link_id,
@@ -77,12 +83,16 @@ export class MapViewComponent {
       target: new_node_id.toString(),
       label: 'is parent of',
     };
-    console.log(new_link);
-    this.extendedNodes = [...this.extendedNodes];
     this.links.push(new_link);
     this.links = [...this.links, new_link];
-    console.log("--------------")
-    console.log(this.extendedNodes);
+    this.extendedNodes = [...this.extendedNodes];
+  }
+
+  onNodeAdd($event: any) {
+    console.log('onNodeAdd');
+    this.isAddCommand = true;
+    this.isInputState = true;
+    console.log($event);
   }
 
   onKeypress($event: any) {
