@@ -13,9 +13,9 @@ export class MapViewComponent {
 
   public layoutSettings = {
     orientation: 'LR',
-    ranker: 'tight-tree',
+    ranker: 'network-simplex',
     align: 'UL',
-    compound: false,
+    compound: true,
     edgePadding: 0,
     multigraph: true,
   };
