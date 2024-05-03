@@ -7,12 +7,9 @@ import { NodeEx } from './nodeex';
 import { EdgeEx } from './edgeex';
 
 
-export class customLayout extends DagreClusterLayout {
+export class customLayout extends DagreLayout {
   public override run(graph: Graph): Graph {
-    console.log(graph.nodes);
-    console.log('run');
     let retVale = super.run(graph);
-    console.log(graph.nodes);
     return retVale;
   }
 }
@@ -49,7 +46,6 @@ export class MapViewComponent {
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(event);
     event.stopPropagation();
   }
 
@@ -95,7 +91,6 @@ export class MapViewComponent {
     }
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      console.log(this.links);
       // 選択されたノードの親ノードと選択されたノードorderを取得
       let parent_node_id = '';
       let selectedNodeOrderNumber = 0;
@@ -136,9 +131,6 @@ export class MapViewComponent {
       return;
     }
 
-
-    console.log(event);
-    console.log(`keydown ${event}`);
     // KeyDownイベントを伝播しないようにする
     event.stopPropagation();
     event.preventDefault();
@@ -146,7 +138,6 @@ export class MapViewComponent {
 
   // ノードを削除
   public deleteNode(nodeId: string) {
-    console.log(`deleteNode ${nodeId}`);
 
     let parent_edges = this.extendedEdges.filter(edge => edge.target === nodeId);
     if (parent_edges.length === 0) {
@@ -167,9 +158,9 @@ export class MapViewComponent {
 
     // 子ノードを列挙
     let child_edges = this.extendedEdges.filter(edge => edge.source === nodeId);
-    console.log(child_edges);
+
     for(let child_edge of child_edges){
-      console.log(child_edge);
+      // 子ノードを削除
       this.deleteNode(child_edge.target);
       // 子ノードとのリンクを削除
       this.extendedEdges = [...this.extendedEdges.filter(edge => edge.id !== child_edge.id)];
@@ -196,8 +187,7 @@ export class MapViewComponent {
 
   // ＋ボタンを押したときの処理
   onNodeKeypress($event: any, node: NodeEx) {
-    console.log($event);
-    console.log(node);
+
   }
 
   // ノードを選択したときの処理
@@ -265,14 +255,11 @@ export class MapViewComponent {
   }
 
   onNodeAdd($event: any) {
-    console.log('onNodeAdd');
     this.isAddCommand = true;
     this.isInputState = true;
-    console.log($event);
   }
 
   onKeypress($event: any) {
-    console.log($event);
     // KeyPressイベントを伝播しないようにする
     $event.stopPropagation();
   }
