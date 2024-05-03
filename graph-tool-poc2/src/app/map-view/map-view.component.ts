@@ -1,8 +1,22 @@
 import { Component, HostListener } from '@angular/core';
-import { Graph } from '@swimlane/ngx-graph';
+import { DagreClusterLayout, DagreLayout, Graph, Orientation } from '@swimlane/ngx-graph';
 import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
+
+
 import { NodeEx } from './nodeex';
 import { EdgeEx } from './edgeex';
+
+
+export class customLayout extends DagreClusterLayout {
+  public override run(graph: Graph): Graph {
+    console.log(graph.nodes);
+    console.log('run');
+    let retVale = super.run(graph);
+    console.log(graph.nodes);
+    return retVale;
+  }
+}
+
 
 @Component({
   selector: 'app-map-view',
@@ -11,14 +25,9 @@ import { EdgeEx } from './edgeex';
 })
 export class MapViewComponent {
 
-  public layoutSettings = {
-    orientation: 'LR',
-    ranker: 'network-simplex',
-    align: 'UL',
-    compound: true,
-    edgePadding: 0,
-    multigraph: true,
-  };
+  
+
+  public customLayout = new customLayout();
 
   public extendedNodes: NodeEx[] = [
     {
@@ -122,7 +131,10 @@ export class MapViewComponent {
       return;
     }
 
-    
+    if (event.key === 'Delete') {
+      this.deleteNode(this.selectedNodeId);
+      return;
+    }
 
 
     console.log(event);
@@ -131,6 +143,48 @@ export class MapViewComponent {
     event.stopPropagation();
     event.preventDefault();
   }
+
+  // ノードを削除
+  public deleteNode(nodeId: string) {
+    console.log(`deleteNode ${nodeId}`);
+
+    let parent_edges = this.extendedEdges.filter(edge => edge.target === nodeId);
+    if (parent_edges.length === 0) {
+      this.selectedNodeId = parent_edges[0].source;
+    }
+    // ノードを選択
+    for(let i = 0; i < this.extendedNodes.length; i++){
+      this.extendedNodes[i].isSelected = false;
+      if (this.extendedNodes[i].id == this.selectedNodeId){
+        this.extendedNodes[i].isSelected = true;
+      }
+    }
+
+    
+    // ノードを削除
+    this.extendedNodes = this.extendedNodes.filter(node => node.id !== nodeId);
+    this.extendedNodes = [...this.extendedNodes];
+
+    // 子ノードを列挙
+    let child_edges = this.extendedEdges.filter(edge => edge.source === nodeId);
+    console.log(child_edges);
+    for(let child_edge of child_edges){
+      console.log(child_edge);
+      this.deleteNode(child_edge.target);
+      // 子ノードとのリンクを削除
+      this.extendedEdges = [...this.extendedEdges.filter(edge => edge.id !== child_edge.id)];
+    }
+
+    // 親ノードとのリンクを削除
+    for(let parent_edge of parent_edges){
+      // 子ノードとのリンクを削除
+      this.extendedEdges = this.extendedEdges.filter(edge => edge.id !== parent_edge.id);
+    }
+
+    this.extendedEdges = [...this.extendedEdges];
+    this.extendedNodes = [...this.extendedNodes];
+  }
+
 
   // 状態(選択、入力、コマンド入力中)
   public isInputState = false;
@@ -194,10 +248,20 @@ export class MapViewComponent {
       label: 'is parent of',
       order: edgeOrder
     };
-    this.extendedEdges.push(new_link);
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.extendedNodes = [...this.extendedNodes];
     this.selectedNodeId = new_node_id.toString();
+    
+    
+
+    this.customLayout.run({nodes: this.extendedNodes, edges: this.extendedEdges, clusters: this.clusters});
+    this.customLayout.settings = {
+      orientation: Orientation.LEFT_TO_RIGHT,
+      ranker: 'tight-tree',
+      rankPadding: 100,
+    };
+
+
   }
 
   onNodeAdd($event: any) {
