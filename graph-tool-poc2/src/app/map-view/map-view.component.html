@@ -1,14 +1,17 @@
 
 <div style="color: skyblue;">
     <ngx-graph
-        [view]="[1000, 900]"
+        [view]="[1680, 1920]"
+        layout="dagreCluster"
+        [layoutSettings]="layoutSettings"
         [nodes]="extendedNodes"
         [links]="links"
+        [clusters]="clusters"
         (select)="onNodeSelect($event)"
         [showMiniMap]="true"
         [miniMapMaxHeight]="200"
         [miniMapMaxWidth]="300"
-        [draggingEnabled]="false"
+        [draggingEnabled]="true"
     >
     <ng-template #nodeTemplate let-node>      
         <!-- 選択状態の枠 -->
