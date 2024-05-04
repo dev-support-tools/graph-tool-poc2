@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { NodeEx } from './map-view/nodeex';
 import { EdgeEx } from './map-view/edgeex';
 import { ClusterNode, Edge } from '@swimlane/ngx-graph';
-import { Subject } from 'rxjs';
-
+import { Observable, Subject, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -41,6 +41,10 @@ export class DataService {
   }
   // 選択状態
   private selectedNodeId = '';
+  public get SelectedNodeId(): string {
+    return this.selectedNodeId;
+  }
+
   // 追加コマンド状態
   private isAddCommand = false;
   public get IsAddCommand(): boolean {
@@ -53,6 +57,33 @@ export class DataService {
   public ChangeAddCommandOff() {
     this.isAddCommand = false;
   }
+
+  // 関連ノード追加
+  private isRelateNode = false;
+  public get IsRelateNode(): boolean {
+    return this.isRelateNode;
+  }  
+  public ChangeRelateNodeState() {
+    this.isRelateNode = true;
+  }
+  public ChangeRelateNodeOff() {
+    this.isRelateNode = false;
+  }
+  public RelateNode(nodeId: string) {
+    let selected_node_id = this.selectedNodeId.toString();
+    let new_node_id = nodeId;
+    let new_link_id = `from_${selected_node_id}_to_${new_node_id}`;
+    let new_link: EdgeEx = {
+      id: new_link_id,
+      source: selected_node_id,
+      target: new_node_id.toString(),
+      label: 'is parent of',
+      order: 0,
+    };
+    this.extendedEdges = [...this.extendedEdges, new_link];
+  }
+
+
 
   public get SelectedNodeText(): string {
     if (this.selectedNodeId === '') {
@@ -79,7 +110,35 @@ export class DataService {
 
   private notificationSubject = new Subject<string>();
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
+
+  public Save() {
+    const httpOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    };
+    this.httpClient.post('./api/data/save', {
+      nodes: this.extendedNodes,
+      edges: this.extendedEdges,
+      selectedNodeId: this.selectedNodeId
+    }, httpOptions).subscribe((data) => {
+      console.log(data);
+    });
+  }
+
+  public Load() : Observable<void> {
+    let result = this.httpClient.get('./api/data/load').subscribe((data: any) => {
+      console.log(data);
+      this.extendedNodes = data.nodes;
+      this.extendedEdges = data.edges;
+      this.selectedNodeId = data.selectedNodeId;
+      this.extendedNodes = [...this.extendedNodes];
+      this.extendedEdges = [...this.extendedEdges];
+    });
+    return of();
+  }
 
   public ChangeEditState() {
     this.notificationSubject.next('Edit');
@@ -142,42 +201,43 @@ export class DataService {
   public deleteNode() {
     const nodeId = this.selectedNodeId
 
-      let parent_edges = this.extendedEdges.filter(edge => edge.target === nodeId);
-      if (parent_edges.length === 0) {
-        this.selectedNodeId = parent_edges[0].source;
-      }
-      // ノードを選択
-      for(let i = 0; i < this.extendedNodes.length; i++){
-        this.extendedNodes[i].isSelected = false;
-        if (this.extendedNodes[i].id == this.selectedNodeId){
-          this.extendedNodes[i].isSelected = true;
-        }
-      }
-  
-      
-      // ノードを削除
-      this.extendedNodes = this.extendedNodes.filter(node => node.id !== nodeId);
-      this.extendedNodes = [...this.extendedNodes];
-  
-      // 子ノードを列挙
-      let child_edges = this.extendedEdges.filter(edge => edge.source === nodeId);
-  
-      for(let child_edge of child_edges){
-        // 子ノードを削除
-        this.deleteNode();
-        // 子ノードとのリンクを削除
-        this.extendedEdges = [...this.extendedEdges.filter(edge => edge.id !== child_edge.id)];
-      }
-  
-      // 親ノードとのリンクを削除
-      for(let parent_edge of parent_edges){
-        // 子ノードとのリンクを削除
-        this.extendedEdges = this.extendedEdges.filter(edge => edge.id !== parent_edge.id);
-      }
-  
-      this.extendedEdges = [...this.extendedEdges];
-      this.extendedNodes = [...this.extendedNodes];
+    // 親ノードを選択
+    let parent_edges = this.extendedEdges.filter(edge => edge.target === nodeId);
+    if (parent_edges.length > 0) {
+      this.selectedNodeId = parent_edges[0].source;
     }
+    // ノードを選択
+    for(let i = 0; i < this.extendedNodes.length; i++){
+      this.extendedNodes[i].isSelected = false;
+      if (this.extendedNodes[i].id == this.selectedNodeId){
+        this.extendedNodes[i].isSelected = true;
+      }
+    }
+
+    // ノードを削除
+    this.extendedNodes = this.extendedNodes.filter(node => node.id !== nodeId);
+    this.extendedNodes = [...this.extendedNodes];
+
+    // 子ノードを列挙
+    let child_edges = this.extendedEdges.filter(edge => edge.source === nodeId);
+
+    for(let child_edge of child_edges){
+      // 子ノードを削除
+      this.deleteNode();
+      // 子ノードとのリンクを削除
+      this.extendedEdges = [...this.extendedEdges.filter(edge => edge.id !== child_edge.id)];
+    }
+
+    // 親ノードとのリンクを削除
+    for(let parent_edge of parent_edges){
+      // 子ノードとのリンクを削除
+      this.extendedEdges = this.extendedEdges.filter(edge => edge.id !== parent_edge.id);
+    }
+
+    this.extendedEdges = [...this.extendedEdges];
+    this.extendedNodes = [...this.extendedNodes];
+
+  }
 
   public MoveSelectedNodeLeft(){
     for(let link of this.links){

@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { DagreClusterLayout, DagreLayout, Graph, Orientation } from '@swimlane/ngx-graph';
 import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
 
@@ -25,7 +25,7 @@ export class customLayout extends DagreLayout {
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss']
 })
-export class MapViewComponent {
+export class MapViewComponent implements OnInit {
 
   public isEdit = false;
 
@@ -36,6 +36,11 @@ export class MapViewComponent {
 
 
   }
+  ngOnInit(): void {
+    this.DataService.Load().subscribe(() => {
+      
+    });
+  }
 
   @HostListener('keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -44,6 +49,15 @@ export class MapViewComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeydownEvent(event: KeyboardEvent) {
+
+    if (event.ctrlKey && event.key === 's') {
+      this.DataService.Save();
+      // KeyDownイベントを伝播しないようにする
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
+
     if (event.key === 'F2' || 
       event.key === 'Tab' ||
       event.key === 'ArrowLeft' ||
@@ -111,6 +125,19 @@ export class MapViewComponent {
 
   // ノードを選択したときの処理
   onNodeSelect($event: any) {
+    if(this.DataService.IsRelateNode){
+      console.log($event.id)
+      console.log(this.DataService.SelectedNodeId)
+      if (this.DataService.SelectedNodeId == $event.id) {
+        console.log("同じノード")
+        return;
+      }
+      this.DataService.RelateNode($event.id);
+      this.DataService.ChangeRelateNodeOff();
+      return;
+    }
+
+
     this.DataService.SelectNode($event.id);
     if (this.DataService.IsAddCommand) {
       this.DataService.ChangeAddCommandOff();
@@ -121,6 +148,10 @@ export class MapViewComponent {
 
   onNodeAdd($event: any) {
     this.DataService.ChangeAddCommandState();
+  }
+
+  onRelateNode($event: any) {
+    this.DataService.ChangeRelateNodeState();
   }
 
   onKeypress($event: any) {

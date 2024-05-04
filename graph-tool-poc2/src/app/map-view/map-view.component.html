@@ -29,6 +29,10 @@
             <svg:path 
             d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
           </svg:g>
+          <svg:g height="24" width="24" viewBox="0 -12 12 12" [attr.transform]="'translate(' + (node.dimension.width + 5) +', 25)'" (click)="onRelateNode(node)">
+            <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
+            <path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/>
+          </svg:g>
         </svg:g>
         <!-- 表示枠 -->
         <svg:g class="node">
