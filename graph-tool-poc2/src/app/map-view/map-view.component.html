@@ -3,9 +3,9 @@
     <ngx-graph
         [view]="[1680, 1920]"
         [layout]="customLayout"
-        [nodes]="extendedNodes"
-        [links]="links"
-        [clusters]="clusters"
+        [nodes]="DataService.extendedNodes"
+        [links]="DataService.links"
+        [clusters]="DataService.clusters"
         (select)="onNodeSelect($event)"
         [showMiniMap]="true"
         [draggingEnabled]="false"
