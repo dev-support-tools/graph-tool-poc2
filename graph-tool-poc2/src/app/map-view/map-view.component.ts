@@ -32,19 +32,31 @@ export class MapViewComponent {
   public customLayout = new customLayout();
 
 
-
   constructor(public readonly DataService: DataService) {
 
 
   }
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     event.stopPropagation();
   }
 
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('window:keydown', ['$event'])
   handleKeydownEvent(event: KeyboardEvent) {
+    if (event.key === 'F2' || 
+      event.key === 'Tab' ||
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowRight' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'ArrowDown' ||
+      event.key === 'Delete'
+    ) {
+      // KeyDownイベントを伝播しないようにする
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
     if (this.DataService.IsInputState) {
       if (event.key === 'Escape') {
         this.DataService.ChangeInputState();
@@ -54,10 +66,9 @@ export class MapViewComponent {
     }
     if(event.key == "F2"){
       this.isEdit = true;
+      this.DataService.ChangeEditState();
       return;
     }
-    event.stopPropagation();
-    event.preventDefault();
     if (event.key === 'Tab') {
       this.DataService.addNode();
       return;
@@ -85,10 +96,6 @@ export class MapViewComponent {
       this.DataService.deleteNode();
       return;
     }
-
-    // KeyDownイベントを伝播しないようにする
-    event.stopPropagation();
-    event.preventDefault();
   }
   addNode() {
     this.DataService.addNode();
@@ -106,6 +113,7 @@ export class MapViewComponent {
   onNodeSelect($event: any) {
     this.DataService.SelectNode($event.id);
     if (this.DataService.IsAddCommand) {
+      this.DataService.ChangeAddCommandOff();
       this.DataService.addNode();
       return;
     }

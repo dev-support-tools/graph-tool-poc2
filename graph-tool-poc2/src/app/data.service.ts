@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NodeEx } from './map-view/nodeex';
 import { EdgeEx } from './map-view/edgeex';
 import { ClusterNode, Edge } from '@swimlane/ngx-graph';
+import { Subject } from 'rxjs';
 
 
 
@@ -10,7 +11,7 @@ import { ClusterNode, Edge } from '@swimlane/ngx-graph';
   providedIn: 'root'
 })
 export class DataService {
-  
+ 
 
   public extendedNodes: NodeEx[] = [
     {
@@ -49,7 +50,44 @@ export class DataService {
     this.isAddCommand = true;
   }
 
+  public ChangeAddCommandOff() {
+    this.isAddCommand = false;
+  }
+
+  public get SelectedNodeText(): string {
+    if (this.selectedNodeId === '') {
+      return '';
+    }
+    let selectedNode = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+    if (!selectedNode) {
+      return '';
+    }
+    if (selectedNode.label === undefined) {
+      return '';
+    }
+    return selectedNode.label;
+  }
+
+  public set SelectedNodeText(value: string){
+    let selectedNode = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+    if (selectedNode) {
+      selectedNode.label = value;
+    }
+    this.extendedNodes = [...this.extendedNodes];
+    
+  }
+
+  private notificationSubject = new Subject<string>();
+
   constructor() { }
+
+  public ChangeEditState() {
+    this.notificationSubject.next('Edit');
+  }
+
+  public get NotificationObservable() {
+    return this.notificationSubject.asObservable();
+  }
 
 
   public SelectNode(nodeId: string) {
