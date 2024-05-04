@@ -7,11 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapViewComponent } from './map-view/map-view.component';
+import { NodeEditViewComponent } from './node-edit-view/node-edit-view.component';
+import { DataService } from './data.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapViewComponent
+    MapViewComponent,
+    NodeEditViewComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +23,7 @@ import { MapViewComponent } from './map-view/map-view.component';
     NgxGraphModule,
     MatIconModule
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

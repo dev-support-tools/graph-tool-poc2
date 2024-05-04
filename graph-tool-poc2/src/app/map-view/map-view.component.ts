@@ -4,6 +4,7 @@ import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
 
 import { NodeEx } from './nodeex';
 import { EdgeEx } from './edgeex';
+import { DataService } from '../data.service';
 
 
 export class customLayout extends DagreLayout {
@@ -47,6 +48,9 @@ export class MapViewComponent {
   }
 
   public clusters: ClusterNode[] = [];
+
+  constructor(readonly DataService: DataService) {
+  }
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
