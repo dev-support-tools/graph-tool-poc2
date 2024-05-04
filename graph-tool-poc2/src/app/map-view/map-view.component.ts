@@ -2,15 +2,19 @@ import { Component, HostListener } from '@angular/core';
 import { DagreClusterLayout, DagreLayout, Graph, Orientation } from '@swimlane/ngx-graph';
 import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
 
-
 import { NodeEx } from './nodeex';
 import { EdgeEx } from './edgeex';
 
 
 export class customLayout extends DagreLayout {
   public override run(graph: Graph): Graph {
-    let retVale = super.run(graph);
-    return retVale;
+    try {
+      return super.run(graph);
+    }
+    catch (e) {
+      console.log(e);
+      return graph;
+    }
   }
 }
 
@@ -22,7 +26,7 @@ export class customLayout extends DagreLayout {
 })
 export class MapViewComponent {
 
-  
+  public isEdit = false;
 
   public customLayout = new customLayout();
 
@@ -30,7 +34,7 @@ export class MapViewComponent {
     {
       id: '1',
       label: 'Node 1',
-      isSelected: false
+      isSelected: false,
     }
   ];
   public get nodes(): Node[] {
@@ -51,6 +55,18 @@ export class MapViewComponent {
 
   @HostListener('document:keydown', ['$event'])
   handleKeydownEvent(event: KeyboardEvent) {
+    if (this.isInputState) {
+      if (event.key === 'Escape') {
+        this.isInputState = false;
+        this.isAddCommand = false;
+        return;
+      }
+      return;
+    }
+    if(event.key == "F2"){
+      this.isEdit = true;
+      return;
+    }
     event.stopPropagation();
     event.preventDefault();
     if (event.key === 'Tab') {
@@ -194,8 +210,8 @@ export class MapViewComponent {
   onNodeSelect($event: any) {
     this.selectedNodeId = $event.id;
     if (this.isAddCommand) {
-      this.addNode($event.id);
       this.isAddCommand = false;
+      this.addNode($event.id);
       return;
     }
     for(let i = 0; i < this.extendedNodes.length; i++){
@@ -218,7 +234,6 @@ export class MapViewComponent {
       id: new_node_id.toString(),
       label: `New Node ${new_node_id.toString()}`,
       isSelected: true,
-      
     };
     this.extendedNodes.push(new_node);
 
@@ -236,20 +251,11 @@ export class MapViewComponent {
       source: selected_node_id,
       target: new_node_id.toString(),
       label: 'is parent of',
-      order: edgeOrder
+      order: edgeOrder,
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.extendedNodes = [...this.extendedNodes];
     this.selectedNodeId = new_node_id.toString();
-    
-    
-
-    this.customLayout.run({nodes: this.extendedNodes, edges: this.extendedEdges, clusters: this.clusters});
-    this.customLayout.settings = {
-      orientation: Orientation.LEFT_TO_RIGHT,
-      ranker: 'tight-tree',
-      rankPadding: 100,
-    };
 
 
   }
