@@ -7,21 +7,41 @@
 
 <div>
     子リンク
+    
+    <div class="link-row">
+        <div class="delete-button-column">削除</div>
+        <div class="link-id-column">リンクID</div>
+        <div class="order-column">オーダー</div>
+        <div class="link-label-column">ラベル</div>
+        <div class="node-label-column">リンク先ノードラベル</div>
+    </div>
     <div *ngFor="let childLink of dataService.ChildrenLink">
         <div class="link-row" width="150px">
-            <div>{{ childLink.id }}</div>
-            <input type="text" [(ngModel)]="childLink.label"/>
-            <input type="button" value="削除" (click)="dataService.deleteChildLink(childLink)"/>
+            <input class="delete-button-column" type="button" value="削除" (click)="dataService.deleteChildLink(childLink)"/>
+            <div class="link-id-column">{{ childLink.id }}</div>
+            <div class="order-column">{{ childLink.order }}</div>
+            <input class="link-label-column" type="text" [(ngModel)]="childLink.label"/>
+            <div class="node-label-column">{{ dataService.getNodeText(childLink.target) }} </div>
         </div>
     </div>
 </div>
 
 <div>
     親リンク
+    <div class="link-row">
+        <div class="delete-button-column">削除</div>
+        <div class="link-id-column">リンクID</div>
+        <div class="order-column">オーダー</div>
+        <div class="link-label-column">ラベル</div>
+        <div class="node-label-column">リンク先ノードラベル</div>
+    </div>
     <div *ngFor="let parentLink of dataService.ParentsLink">
         <div class="link-row">
-            <div>{{ parentLink.id }}</div>
-            <input type="text" [(ngModel)]="parentLink.label"/>
+            <input class="delete-button-column" type="button" value="削除" (click)="dataService.deleteChildLink(parentLink)"/>
+            <div class="link-id-column">{{ parentLink.id }}</div>
+            <div class="order-column">{{ parentLink.order }}</div>
+            <input class="link-label-column" type="text" [(ngModel)]="parentLink.label"/>
+            <div class="node-label-column">{{ dataService.getNodeText(parentLink.target) }} </div>
         </div>
     </div>
 </div>

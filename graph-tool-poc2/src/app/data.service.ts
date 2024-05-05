@@ -31,10 +31,21 @@ export class DataService {
   ];
   
   private setShowChildNodes(node: NodeEx, nodes: NodeEx[]): void {
+    // ノード追加
     nodes.push(node);
     if(node.isChildrenHidden === false){
       let edges = this.extendedEdges.filter(edge => edge.source === node.id);
       for (let edge of edges) {
+        if(edge.linkType === 0){
+          edge.stroke = 'black';
+          edge.strokeWidth = 4;
+          edge.strokeDasharray = '';
+        }else if(edge.linkType === 1){
+          edge.stroke = 'red';
+          edge.strokeWidth = 2;
+          edge.strokeDasharray = '3,3';
+        }
+
         console.log(edge);
         let childNode = this.extendedNodes.find(node => node.id === edge.target);
         this.visibleEdges.push(edge);
@@ -163,11 +174,10 @@ export class DataService {
       target: new_node_id.toString(),
       label: 'is parent of',
       order: 0,
-      stroke: 'red',
-      strokeWidth: 2,
-      strokeDasharray: '3,3'
+      linkType: 1,
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
+    this.refreshVisibleNodes();
   }
 
   // ノードを非表示
@@ -176,7 +186,6 @@ export class DataService {
     if(selectNode){
       selectNode.isChildrenHidden = true;
     }
-    this.visibleEdges = [];
     this.refreshVisibleNodes()
   }
 
@@ -188,7 +197,6 @@ export class DataService {
       selectNode.isChildrenHidden = false;
       console.log(selectNode);
     }
-    this.visibleEdges = [];
     this.refreshVisibleNodes();
   }
 
@@ -204,6 +212,17 @@ export class DataService {
 
   public get ParentsLink(): EdgeEx[] {
     return this.extendedEdges.filter(edge => edge.target === this.selectedNodeId);
+  }
+
+  public getNodeText(nodeId: string): string {
+    let selectedNode = this.extendedNodes.find(node => node.id === nodeId);
+    if (!selectedNode) {
+      return '';
+    }
+    if (selectedNode.label === undefined) {
+      return '';
+    }
+    return selectedNode.label;
   }
 
   public get SelectedNodeText(): string {
@@ -314,6 +333,7 @@ export class DataService {
   }
 
   public ChangeEditState() {
+    this.isInputState = true;
     this.notificationSubject.next('Edit');
   }
 
@@ -366,9 +386,7 @@ export class DataService {
       target: new_node_id.toString(),
       label: 'is parent of',
       order: edgeOrder,
-      stroke: 'black',
-      strokeWidth: 4,
-      strokeDasharray: ''
+      linkType: 0,
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.extendedNodes = [...this.extendedNodes];
