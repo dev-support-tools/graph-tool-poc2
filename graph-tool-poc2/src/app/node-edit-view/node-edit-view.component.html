@@ -1,51 +1,151 @@
-<div>
-    ノード情報
-</div>
-<div>
-    <input #textInput type="text" [(ngModel)]="dataService.SelectedNodeText"/>
-</div>
-
-<div>
-    子リンク
-    
-    <div class="link-row">
-        <div class="delete-button-column">削除</div>
-        <div class="link-id-column">リンクID</div>
-        <div class="order-column">オーダー</div>
-        <div class="link-label-column">ラベル</div>
-        <div class="node-label-column">リンク先ノードラベル</div>
-    </div>
-    <div *ngFor="let childLink of dataService.ChildrenLink">
-        <div class="link-row" width="150px">
-            <input class="delete-button-column" type="button" value="削除" (click)="dataService.deleteChildLink(childLink)"/>
-            <div class="link-id-column">{{ childLink.id }}</div>
-            <div class="order-column">{{ childLink.order }}</div>
-            <input class="link-label-column" type="text" [(ngModel)]="childLink.label"/>
-            <div class="node-label-column">{{ dataService.getNodeText(childLink.target) }} </div>
+<div class="node-edit-root">
+  <div>
+    <div>ノード情報</div>
+    <div>
+      <div class="node-row">
+        <div class="node-label">ノードID</div>
+        <div class="node-column">
+          {{ dataService.getSelectedNode()?.id }}
         </div>
-    </div>
-</div>
+      </div>
+      <div class="node-row">
+        <div class="node-label">ノード種別</div>
+        <div class="node-column">
 
-<div>
-    親リンク
-    <div class="link-row">
-        <div class="delete-button-column">削除</div>
-        <div class="link-id-column">リンクID</div>
-        <div class="order-column">オーダー</div>
-        <div class="link-label-column">ラベル</div>
-        <div class="node-label-column">リンク先ノードラベル</div>
-    </div>
-    <div *ngFor="let parentLink of dataService.ParentsLink">
-        <div class="link-row">
-            <input class="delete-button-column" type="button" value="削除" (click)="dataService.deleteChildLink(parentLink)"/>
-            <div class="link-id-column">{{ parentLink.id }}</div>
-            <div class="order-column">{{ parentLink.order }}</div>
-            <input class="link-label-column" type="text" [(ngModel)]="parentLink.label"/>
-            <div class="node-label-column">{{ dataService.getNodeText(parentLink.target) }} </div>
         </div>
+      </div>
+      <div class="node-row">
+        <div class="node-label">ノードラベル</div>
+        <div class="node-column">
+          <input
+            #textInput
+            type="text"
+            [(ngModel)]="dataService.SelectedNodeText"
+          />
+        </div>
+      </div>
     </div>
-</div>
+    <div>
+        <div class="link-content">
+          <mat-accordion multi>
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title> 画像 </mat-panel-title>
+              </mat-expansion-panel-header>
 
-<div>
-    画像
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+    <div>
+      <div class="link-content">
+        <mat-accordion multi>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title> 子リンク </mat-panel-title>
+            </mat-expansion-panel-header>
+            <table
+              mat-table
+              [dataSource]="dataService.ChildrenLink"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="operation">
+                <th mat-header-cell *matHeaderCellDef>操作</th>
+                <td mat-cell *matCellDef="let element">
+                  <input
+                    class="delete-button-column"
+                    type="button"
+                    value="削除"
+                    (click)="dataService.deleteChildLink(element)"
+                  />
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>リンクID</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="order">
+                <th mat-header-cell *matHeaderCellDef>Order</th>
+                <td mat-cell *matCellDef="let element">{{ element.order }}</td>
+              </ng-container>
+              <ng-container matColumnDef="label">
+                <th mat-header-cell *matHeaderCellDef>ラベル</th>
+                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+              </ng-container>
+              <ng-container matColumnDef="kinds">
+                <th mat-header-cell *matHeaderCellDef>種類</th>
+                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+              </ng-container>
+              <ng-container matColumnDef="nodeLabel">
+                <th mat-header-cell *matHeaderCellDef>リンク先ラベル</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ dataService.getNode(element.target)?.label }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="linkChildrenColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: linkChildrenColumns"
+              ></tr>
+            </table>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+
+    <div>
+      <div class="link-content">
+        <mat-accordion multi>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title> 親リンク </mat-panel-title>
+            </mat-expansion-panel-header>
+            <table
+              mat-table
+              [dataSource]="dataService.ParentsLink"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="operation">
+                <th mat-header-cell *matHeaderCellDef>操作</th>
+                <td mat-cell *matCellDef="let element">
+                  <input
+                    class="delete-button-column"
+                    type="button"
+                    value="削除"
+                    (click)="dataService.deleteChildLink(element)"
+                  />
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>リンクID</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="order">
+                <th mat-header-cell *matHeaderCellDef>Order</th>
+                <td mat-cell *matCellDef="let element">{{ element.order }}</td>
+              </ng-container>
+              <ng-container matColumnDef="label">
+                <th mat-header-cell *matHeaderCellDef>ラベル</th>
+                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+              </ng-container>
+              <ng-container matColumnDef="kinds">
+                <th mat-header-cell *matHeaderCellDef>種類</th>
+                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+              </ng-container>
+              <ng-container matColumnDef="nodeLabel">
+                <th mat-header-cell *matHeaderCellDef>親ラベル</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ dataService.getNode(element.source)?.label }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="linkParentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: linkParentColumns"></tr>
+            </table>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
 </div>

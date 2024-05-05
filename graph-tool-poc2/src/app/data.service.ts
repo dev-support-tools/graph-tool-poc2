@@ -16,11 +16,11 @@ export class DataService {
   public get SelectedFile(): string {
     return this.selectedFile;
   }
+  
   public SelectFile(fileName: string) {
     this.selectedFile = fileName;
   }
 
-  
   private extendedNodes: NodeEx[] = [
     {
       id: '1',
@@ -214,15 +214,26 @@ export class DataService {
     return this.extendedEdges.filter(edge => edge.target === this.selectedNodeId);
   }
 
-  public getNodeText(nodeId: string): string {
+  public getNode(nodeId: string): NodeEx | undefined {
     let selectedNode = this.extendedNodes.find(node => node.id === nodeId);
     if (!selectedNode) {
-      return '';
+      return undefined;
     }
     if (selectedNode.label === undefined) {
-      return '';
+      return undefined;
     }
-    return selectedNode.label;
+    return selectedNode;
+  }
+
+  public getSelectedNode(): NodeEx | undefined {
+    let selectedNode = this.extendedNodes.find(node => node.id === this.SelectedNodeId);
+    if (!selectedNode) {
+      return undefined;
+    }
+    if (selectedNode.label === undefined) {
+      return undefined;
+    }
+    return selectedNode;
   }
 
   public get SelectedNodeText(): string {

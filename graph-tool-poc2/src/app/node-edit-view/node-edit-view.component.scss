@@ -1,4 +1,26 @@
 
+.node-edit-root {
+    display: flex;
+}
+
+.node-haader{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.node-row{
+    display: flex;
+    align-items: center;
+}
+
+.node-column{
+    width: 150px;
+}
+
+.node-label{
+    width: 250px;
+}
 
 .link-row {
     display: flex;
@@ -24,4 +46,8 @@
 
 .node-label-column {
     width:250px;
+}
+
+.link-content {
+    width: 500pt;
 }

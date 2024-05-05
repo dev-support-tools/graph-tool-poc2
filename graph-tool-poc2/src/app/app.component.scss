@@ -4,44 +4,49 @@
     height: 100%;
 }
 
+.top {
+    height: calc(5% - 2px);
+    border: 1px solid gray;
+    background-color: whitesmoke;
+}
 
 .content {
     display: flex;
-    height: calc(65% - 2px)
+    height: calc(95%)
 }
 
-.top {
-    height: 5%;
+.bottom {
+    height: calc(0%);
     border: 1px solid gray;
     background-color: whitesmoke;
 }
 
 .content-left {
     width: 10%;
-    border: 1px solid gray;
+    // border: 1px solid gray;
     background-color: whitesmoke;
 }
 
 .file-view {
-    height: calc(50% - 2px);
-    border: 1px solid gray;
+    padding: 10px;
+    height: calc(47%);
+    border-right: 1px solid gray;;
+    border-bottom: 1px solid gray;;
 }
 
 .cluster-view {
-    height: calc(50% - 2px);
-    border: 1px solid gray;
+    padding: 10px;
+    height: calc(48%);
+    border-right: 1px solid gray;;
 }
 
 .content-center {
-    width: 85%;
+    width: 60%;
 }
 
 .content-right {
-    width: 5%;
-}
-
-.bottom {
-    height: calc(30% - 2px);
-    border: 1px solid gray;
+    padding: 10px;
+    width: 30%;
+    border-left: 1px solid gray;;
     background-color: whitesmoke;
 }

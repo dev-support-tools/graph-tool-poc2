@@ -8,6 +8,10 @@ import { DataService } from '../data.service';
 })
 export class NodeEditViewComponent implements OnInit{
 
+
+  linkChildrenColumns: string[] = ['operation', 'id', 'order', 'label', 'kinds', 'nodeLabel'];
+  linkParentColumns: string[] = ['operation', 'id', 'order', 'label', 'kinds', 'nodeLabel'];
+  
   @ViewChild('textInput') textInput: ElementRef | undefined;
 
   constructor(public readonly dataService: DataService) { 
