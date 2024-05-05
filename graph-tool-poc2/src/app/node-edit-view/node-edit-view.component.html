@@ -7,10 +7,23 @@
 
 <div>
     子リンク
+    <div *ngFor="let childLink of dataService.ChildrenLink">
+        <div class="link-row" width="150px">
+            <div>{{ childLink.id }}</div>
+            <input type="text" [(ngModel)]="childLink.label"/>
+            <input type="button" value="削除" (click)="dataService.deleteChildLink(childLink)"/>
+        </div>
+    </div>
 </div>
 
 <div>
     親リンク
+    <div *ngFor="let parentLink of dataService.ParentsLink">
+        <div class="link-row">
+            <div>{{ parentLink.id }}</div>
+            <input type="text" [(ngModel)]="parentLink.label"/>
+        </div>
+    </div>
 </div>
 
 <div>

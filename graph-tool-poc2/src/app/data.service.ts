@@ -47,6 +47,7 @@ export class DataService {
   
   private visibleNodes: NodeEx[] = [];
   private refreshVisibleNodes() {
+    this.visibleEdges = [];
     this.visibleNodes = [];
     this.setShowChildNodes(this.extendedNodes[0], this.visibleNodes);
   }
@@ -191,7 +192,19 @@ export class DataService {
     this.refreshVisibleNodes();
   }
 
+  public get ChildrenLink(): EdgeEx[] {
+    return this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
+  }
 
+  public deleteChildLink(childNodeId: EdgeEx) {
+    this.extendedEdges = this.extendedEdges.filter(edge => edge.id !== childNodeId.id);
+    this.extendedEdges = [...this.extendedEdges];
+    this.refreshVisibleNodes();
+  }
+
+  public get ParentsLink(): EdgeEx[] {
+    return this.extendedEdges.filter(edge => edge.target === this.selectedNodeId);
+  }
 
   public get SelectedNodeText(): string {
     if (this.selectedNodeId === '') {
@@ -285,6 +298,7 @@ export class DataService {
       this.extendedNodes = data.nodes;
       this.extendedEdges = data.edges;
       this.clusters = data.clusters;
+
       this.selectedNodeId = data.selectedNodeId;
       this.extendedNodes = [...this.extendedNodes];
       this.refreshVisibleNodes();
