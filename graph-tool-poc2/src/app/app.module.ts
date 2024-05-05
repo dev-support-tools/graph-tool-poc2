@@ -11,12 +11,14 @@ import { AppComponent } from './app.component';
 import { MapViewComponent } from './map-view/map-view.component';
 import { NodeEditViewComponent } from './node-edit-view/node-edit-view.component';
 import { DataService } from './data.service';
+import { ClustersViewComponent } from './clusters-view/clusters-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MapViewComponent,
-    NodeEditViewComponent
+    NodeEditViewComponent,
+    ClustersViewComponent
   ],
   imports: [
     BrowserModule,

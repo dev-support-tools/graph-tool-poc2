@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DataService {
+  
  
 
   public extendedNodes: NodeEx[] = [
@@ -29,7 +30,56 @@ export class DataService {
     return this.extendedEdges;
   }
 
-  public clusters: ClusterNode[] = [];
+  // クラスター関係
+  private selectedCluster: ClusterNode | null = null;
+  private clusters: ClusterNode[] = [];
+  public get Clusters(): ClusterNode[] {
+    return this.clusters;
+  }
+  public SelectCluster(clusterId: string) {
+    for(let i = 0; i < this.clusters.length; i++){
+      
+      if (this.clusters[i].id == clusterId){
+        this.selectedCluster = this.clusters[i];
+        console.log(this.selectedCluster);
+      }
+    }
+  }
+  public get IsClusterSelectMode(): boolean {
+    if (this.selectedCluster === null) {
+      return false;
+    }
+    return this.selectedCluster?.id !== '';
+  }
+  public AddCluster() {
+    console.log(this.clusters);
+    let clusterLength = this.clusters.length;
+    let cluster = {
+      id: `cluster${clusterLength}`,
+      childNodeIds: [],
+      label: `Cluster ${clusterLength}`
+    };
+    this.clusters.push(cluster);
+    this.clusters = [...this.clusters];
+  }
+  public AddClusterNode(nodeId: string): void {
+    // ノードをクラスターに追加
+    if (this.selectedCluster) {
+      // nodeIdからノードを取得
+      let node = this.extendedNodes.find(node => node.id === nodeId);
+      if (node) {
+        if(this.selectedCluster !== undefined && this.selectedCluster.childNodeIds !== undefined){
+          this.selectedCluster.childNodeIds.push(nodeId);
+        }
+      }
+    }
+    this.extendedNodes = [...this.extendedNodes];
+    this.clusters = [...this.clusters];
+  }
+  public ClearSelectedCluster() {
+    this.selectedCluster = null;
+  }
+
 
   // 状態(選択、入力、コマンド入力中)
   private isInputState = false;
@@ -38,6 +88,9 @@ export class DataService {
   }
   public ChangeInputState() {
     this.isInputState = !this.isInputState;
+  }
+  public ClearInputState() {
+    this.isInputState = false;
   }
   // 選択状態
   private selectedNodeId = '';
@@ -79,6 +132,9 @@ export class DataService {
       target: new_node_id.toString(),
       label: 'is parent of',
       order: 0,
+      stroke: 'red',
+      strokeWidth: 2,
+      strokeDasharray: '3,3'
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
   }
@@ -122,6 +178,7 @@ export class DataService {
     this.httpClient.post('./api/data/save', {
       nodes: this.extendedNodes,
       edges: this.extendedEdges,
+      clusters: this.clusters,
       selectedNodeId: this.selectedNodeId
     }, httpOptions).subscribe((data) => {
       console.log(data);
@@ -131,11 +188,31 @@ export class DataService {
   public Load() : Observable<void> {
     let result = this.httpClient.get('./api/data/load').subscribe((data: any) => {
       console.log(data);
+      if (data === null) {
+        this.extendedNodes = [];
+        this.extendedNodes.push({
+          id: '1',
+          label: 'Node 1',
+          isSelected: false,
+        });
+        this.extendedEdges = [];
+        this.clusters = [];
+        this.selectedNodeId = '';
+        return;
+      }
+
       this.extendedNodes = data.nodes;
       this.extendedEdges = data.edges;
+      this.clusters = data.clusters;
       this.selectedNodeId = data.selectedNodeId;
       this.extendedNodes = [...this.extendedNodes];
       this.extendedEdges = [...this.extendedEdges];
+      if(this.clusters === undefined){
+        this.clusters = [];
+      }else{
+        this.clusters = [...this.clusters];
+      }
+      
     });
     return of();
   }
@@ -190,6 +267,9 @@ export class DataService {
       target: new_node_id.toString(),
       label: 'is parent of',
       order: edgeOrder,
+      stroke: 'black',
+      strokeWidth: 4,
+      strokeDasharray: ''
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.extendedNodes = [...this.extendedNodes];

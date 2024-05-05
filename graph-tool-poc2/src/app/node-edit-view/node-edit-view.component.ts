@@ -18,6 +18,7 @@ export class NodeEditViewComponent implements OnInit{
       console.log('NodeEditViewComponent:NotificationObservable');
       console.log(this.textInput);
       this.textInput?.nativeElement.focus();
+      this.textInput?.nativeElement.select();
     });
   }
 

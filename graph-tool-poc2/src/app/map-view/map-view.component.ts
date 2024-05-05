@@ -7,10 +7,12 @@ import { EdgeEx } from './edgeex';
 import { DataService } from '../data.service';
 
 
-export class customLayout extends DagreLayout {
+export class customLayout extends DagreClusterLayout {
   public override run(graph: Graph): Graph {
     try {
-      return super.run(graph);
+      const result = super.run(graph);
+      console.log(result);
+      return result;
     }
     catch (e) {
       console.log(e);
@@ -71,11 +73,13 @@ export class MapViewComponent implements OnInit {
       event.preventDefault();
     }
 
+    if (event.key === 'Escape') {
+      this.DataService.ClearInputState();
+      this.DataService.ClearSelectedCluster();
+      console.log("Escape")
+      return;
+    }
     if (this.DataService.IsInputState) {
-      if (event.key === 'Escape') {
-        this.DataService.ChangeInputState();
-        return;
-      }
       return;
     }
     if(event.key == "F2"){
@@ -125,9 +129,14 @@ export class MapViewComponent implements OnInit {
 
   // ノードを選択したときの処理
   onNodeSelect($event: any) {
+
+    if(this.DataService.IsClusterSelectMode){
+      this.DataService.AddClusterNode($event.id);
+      return;
+    }
+
+    // サブのノードを選択したとき
     if(this.DataService.IsRelateNode){
-      console.log($event.id)
-      console.log(this.DataService.SelectedNodeId)
       if (this.DataService.SelectedNodeId == $event.id) {
         console.log("同じノード")
         return;

@@ -1,0 +1,15 @@
+
+
+<div>
+    <div *ngFor="let cluster of dataService.Clusters">
+        <div (click)="onClickCluster(cluster.id)">
+            {{cluster.label}}
+            <div *ngFor="let node of cluster.childNodeIds">
+                {{ node }}
+            </div>
+        </div>
+        
+    </div>
+    <input type="button" value="Add Cluster" (click)="addCluster()">
+
+</div>
