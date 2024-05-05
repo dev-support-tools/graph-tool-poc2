@@ -39,7 +39,7 @@
             [attr.visibility]="node.isSelected && node.isChildrenHidden ? 'visible' : 'hidden'"
             [attr.transform]="'translate(-30, 0)'" 
             (click)="onNodeOpen()">
-              <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
+              <circle cx="12" cy="12" r="12" stroke="black" stroke-width="2" style="fill: whitesmoke"/>
               <path d="M10 17l5-5-5-5v10z"/>
           </svg:g>
           <!-- ノート追加ボタン -->
@@ -58,6 +58,13 @@
         </svg:g>
         <!-- 表示枠 -->
         <svg:g class="node">
+            <svg:g 
+              [attr.visibility]="!node.isSelected && node.isChildrenHidden ? 'visible' : 'hidden'"
+              [attr.transform]="'translate(-30, 0)'" 
+              (click)="onNodeOpen()">
+                <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
+                <path d="M10 17l5-5-5-5v10z"/>
+            </svg:g>
             <svg:rect
             [attr.width]="node.dimension.width"
             [attr.height]="node.dimension.height"

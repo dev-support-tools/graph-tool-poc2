@@ -4,23 +4,33 @@
     height: 100%;
 }
 
+
 .content {
     display: flex;
-    height: 70%
+    height: calc(65% - 2px)
+}
+
+.top {
+    height: 5%;
+    border: 1px solid gray;
+    background-color: whitesmoke;
 }
 
 .content-left {
     width: 10%;
+    border: 1px solid gray;
+    background-color: whitesmoke;
 }
 
 .file-view {
-    height: 50%;
+    height: calc(50% - 2px);
+    border: 1px solid gray;
 }
 
 .cluster-view {
-    height: 50%;
+    height: calc(50% - 2px);
+    border: 1px solid gray;
 }
-
 
 .content-center {
     width: 85%;
@@ -31,5 +41,7 @@
 }
 
 .bottom {
-    height: 30%;
+    height: calc(30% - 2px);
+    border: 1px solid gray;
+    background-color: whitesmoke;
 }

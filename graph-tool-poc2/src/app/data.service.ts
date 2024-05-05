@@ -26,7 +26,6 @@ export class DataService {
       id: '1',
       label: 'Node 1',
       isSelected: false,
-      isHidden: false,
       isChildrenHidden: false,
     }
   ];
@@ -176,14 +175,6 @@ export class DataService {
     if(selectNode){
       selectNode.isChildrenHidden = true;
     }
-    let child_edges = this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
-    console.log(child_edges);
-    for(let child_edge of child_edges){
-      let childNode = this.extendedNodes.find(node => node.id === child_edge.target);
-      if (childNode) {
-        childNode.isHidden = true;
-      }
-    }
     this.visibleEdges = [];
     this.refreshVisibleNodes()
   }
@@ -195,14 +186,6 @@ export class DataService {
     if(selectNode){
       selectNode.isChildrenHidden = false;
       console.log(selectNode);
-    }
-    let child_edges = this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
-    console.log(child_edges);
-    for(let child_edge of child_edges){
-      let childNode = this.extendedNodes.find(node => node.id === child_edge.target);
-      if (childNode) {
-        childNode.isHidden = false;
-      }
     }
     this.visibleEdges = [];
     this.refreshVisibleNodes();
@@ -291,7 +274,6 @@ export class DataService {
           id: '1',
           label: 'Node 1',
           isSelected: false,
-          isHidden: false,
           isChildrenHidden: false,
         });
         this.extendedEdges = [];
@@ -442,19 +424,24 @@ export class DataService {
   }
 
   public MoveSelectedNodeRight(){
-    for(let link of this.links){
-      if (link.source === this.selectedNodeId){
-        this.selectedNodeId = link.target;
-        for(let i = 0; i < this.extendedNodes.length; i++){
-          this.extendedNodes[i].isSelected = false;
-          if (this.extendedNodes[i].id == this.selectedNodeId){
-            this.extendedNodes[i].isSelected = true;
-          }
-        }
-        this.extendedNodes = [...this.extendedNodes];
-        this.refreshVisibleNodes();
+
+    // 選択されたノードの子リンクを取得し、order順で並べ、最初のノードを選択
+    let child_edges = this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
+    if (child_edges.length === 0) {
+      return;
+    }
+    let child_edges_sorted = child_edges.sort((a, b) => a.order - b.order);
+    this.selectedNodeId = child_edges_sorted[0].target;
+    for(let i = 0; i < this.extendedNodes.length; i++){
+      this.extendedNodes[i].isSelected = false;
+    }
+    for(let i = 0; i < this.extendedNodes.length; i++){
+      if (this.extendedNodes[i].id == this.selectedNodeId){
+        this.extendedNodes[i].isSelected = true;
       }
     }
+    this.extendedNodes = [...this.extendedNodes];
+    this.refreshVisibleNodes();
   }
 
   public MoveSelectedNodeUP () {

@@ -112,6 +112,9 @@ export class MapViewComponent implements OnInit {
     }
     if (event.key === 'ArrowRight') {
       this.DataService.MoveSelectedNodeRight();
+      // KeyDownイベントを伝播しないようにする
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
 
