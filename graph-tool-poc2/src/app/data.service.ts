@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NodeEx } from './map-view/nodeex';
 import { EdgeEx } from './map-view/edgeex';
 import { ClusterNode, Edge } from '@swimlane/ngx-graph';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, map, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -12,7 +12,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DataService {
   
- 
+  private selectedFile = 'data.json';
+  public get SelectedFile(): string {
+    return this.selectedFile;
+  }
+  public SelectFile(fileName: string) {
+    this.selectedFile = fileName;
+  }
 
   public extendedNodes: NodeEx[] = [
     {
@@ -168,6 +174,29 @@ export class DataService {
 
   constructor(private httpClient: HttpClient) { }
 
+  public addFile() {
+    console.log('addFile');
+    this.httpClient.post('./api/file/add', {}).subscribe((data) => {
+      console.log(data);
+    });
+  }
+
+  public loadFileList(): Observable<string[]> {
+    const httpOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    };
+    
+    console.log('loadFileList');
+    return this.httpClient.get('./api/file/list', httpOptions).pipe(
+      map((data: any) => {
+        console.log(data);
+        return data as string[];
+      }));
+  }
+
   public Save() {
     const httpOptions = {
       headers: {
@@ -175,20 +204,25 @@ export class DataService {
         'Access-Control-Allow-Origin': '*'
       }
     };
-    this.httpClient.post('./api/data/save', {
+    const requestBody = {
+      fileName: this.selectedFile,
       nodes: this.extendedNodes,
       edges: this.extendedEdges,
       clusters: this.clusters,
       selectedNodeId: this.selectedNodeId
-    }, httpOptions).subscribe((data) => {
+    };
+    this.httpClient.post('./api/data/save', requestBody, httpOptions).subscribe((data) => {
       console.log(data);
     });
   }
 
   public Load() : Observable<void> {
-    let result = this.httpClient.get('./api/data/load').subscribe((data: any) => {
+    const requestBody = {
+      fileName: this.selectedFile
+    };
+    let result = this.httpClient.post('./api/data/load', requestBody).subscribe((data: any) => {
       console.log(data);
-      if (data === null) {
+      if (data === null || data === undefined || data.nodes === undefined) {
         this.extendedNodes = [];
         this.extendedNodes.push({
           id: '1',

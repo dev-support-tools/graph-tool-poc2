@@ -1,0 +1,9 @@
+<input type="button" value="ファイル追加" (click)="onClickAdd()">
+<div *ngFor="let file of fileList">
+    <div class="file" (click)="onFileClick(file)">
+        <span *ngIf="file === dataService.SelectedFile">
+            *
+        </span>
+        <span class="file-name">{{file}}</span>
+    </div>
+</div>

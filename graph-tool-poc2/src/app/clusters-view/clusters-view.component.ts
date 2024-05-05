@@ -19,8 +19,6 @@ export class ClustersViewComponent implements OnInit{
 
   public addCluster() {
     this.dataService.AddCluster();
-    
-    console.log(this.dataService.Clusters)
   }
 
   public onClickCluster(clusterId: string) {

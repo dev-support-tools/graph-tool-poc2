@@ -1,3 +1,20 @@
-<app-map-view></app-map-view>
-<app-node-edit-view></app-node-edit-view>
-<app-clusters-view></app-clusters-view>
+<div class="root">
+    <div class="content">
+        <div class="content-left">
+            <div class="file-view">
+                <app-file-view></app-file-view>
+            </div>
+            <div class="cluster-view">
+                <app-clusters-view></app-clusters-view>
+            </div>
+        </div>
+        <div class="content-center">
+            <app-map-view></app-map-view>
+        </div>
+        <div class="content-right">
+        </div>
+    </div>
+    <div style="height: 30%;">
+        <app-node-edit-view></app-node-edit-view>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { DagreClusterLayout, DagreLayout, Graph, Orientation } from '@swimlane/ngx-graph';
-import { Node, Edge, ClusterNode, Layout } from '@swimlane/ngx-graph';
+import { Node, Edge, ClusterNode, Layout, MiniMapPosition } from '@swimlane/ngx-graph';
 
 import { NodeEx } from './nodeex';
 import { EdgeEx } from './edgeex';
@@ -11,7 +11,6 @@ export class customLayout extends DagreClusterLayout {
   public override run(graph: Graph): Graph {
     try {
       const result = super.run(graph);
-      console.log(result);
       return result;
     }
     catch (e) {
@@ -33,7 +32,7 @@ export class MapViewComponent implements OnInit {
 
   public customLayout = new customLayout();
 
-
+  
   constructor(public readonly DataService: DataService) {
 
 
