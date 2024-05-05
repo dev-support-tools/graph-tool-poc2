@@ -59,6 +59,22 @@ export class MapViewComponent implements OnInit {
       return;
     }
 
+    if (event.shiftKey && event.key === 'ArrowLeft') {
+      this.DataService.HiddenChildren();
+      // KeyDownイベントを伝播しないようにする
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
+
+    if (event.shiftKey && event.key === 'ArrowRight') {
+      this.DataService.ShowChildren();
+      // KeyDownイベントを伝播しないようにする
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
+
     if (event.key === 'F2' || 
       event.key === 'Tab' ||
       event.key === 'ArrowLeft' ||
@@ -128,30 +144,42 @@ export class MapViewComponent implements OnInit {
 
   // ノードを選択したときの処理
   onNodeSelect($event: any) {
-
+    console.log("onNodeSelect");
+    console.log($event.id); 
+    // クラスターを選択したとき
     if(this.DataService.IsClusterSelectMode){
+      console.log("クラスター選択");
       this.DataService.AddClusterNode($event.id);
       return;
     }
 
     // サブのノードを選択したとき
     if(this.DataService.IsRelateNode){
+      console.log("サブノード選択");
       if (this.DataService.SelectedNodeId == $event.id) {
-        console.log("同じノード")
+        console.log("同じノード");
         return;
       }
       this.DataService.RelateNode($event.id);
       this.DataService.ChangeRelateNodeOff();
       return;
     }
-
-
+    // ノードを選択したとき
     this.DataService.SelectNode($event.id);
     if (this.DataService.IsAddCommand) {
+      console.log("ノード追加");
       this.DataService.ChangeAddCommandOff();
       this.DataService.addNode();
       return;
     }
+  }
+
+  onNodeOpen() {
+    this.DataService.ShowChildren();
+  }
+
+  onNodeClose() {
+    this.DataService.HiddenChildren();
   }
 
   onNodeAdd($event: any) {

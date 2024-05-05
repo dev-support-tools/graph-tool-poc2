@@ -20,20 +20,45 @@ export class DataService {
     this.selectedFile = fileName;
   }
 
-  public extendedNodes: NodeEx[] = [
+  
+  private extendedNodes: NodeEx[] = [
     {
       id: '1',
       label: 'Node 1',
       isSelected: false,
+      isHidden: false,
+      isChildrenHidden: false,
     }
   ];
+  
+  private setShowChildNodes(node: NodeEx, nodes: NodeEx[]): void {
+    nodes.push(node);
+    if(node.isChildrenHidden === false){
+      let edges = this.extendedEdges.filter(edge => edge.source === node.id);
+      for (let edge of edges) {
+        console.log(edge);
+        let childNode = this.extendedNodes.find(node => node.id === edge.target);
+        this.visibleEdges.push(edge);
+        if (childNode) {
+          this.setShowChildNodes(childNode, nodes);  
+        }
+      }
+    }
+  }
+  
+  private visibleNodes: NodeEx[] = [];
+  private refreshVisibleNodes() {
+    this.visibleNodes = [];
+    this.setShowChildNodes(this.extendedNodes[0], this.visibleNodes);
+  }
   public get nodes(): NodeEx[] {
-    return this.extendedNodes;
+    return this.visibleNodes;
   }
 
   private extendedEdges: EdgeEx[] = [];
+  private visibleEdges: EdgeEx[] = [];
   public get links(): Edge[] {
-    return this.extendedEdges;
+    return this.visibleEdges;
   }
 
   // クラスター関係
@@ -145,6 +170,44 @@ export class DataService {
     this.extendedEdges = [...this.extendedEdges, new_link];
   }
 
+  // ノードを非表示
+  public HiddenChildren() {
+    let selectNode = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+    if(selectNode){
+      selectNode.isChildrenHidden = true;
+    }
+    let child_edges = this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
+    console.log(child_edges);
+    for(let child_edge of child_edges){
+      let childNode = this.extendedNodes.find(node => node.id === child_edge.target);
+      if (childNode) {
+        childNode.isHidden = true;
+      }
+    }
+    this.visibleEdges = [];
+    this.refreshVisibleNodes()
+  }
+
+  // ノードを表示
+  public ShowChildren() {
+    console.log('ShowChildren');
+    let selectNode = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+    if(selectNode){
+      selectNode.isChildrenHidden = false;
+      console.log(selectNode);
+    }
+    let child_edges = this.extendedEdges.filter(edge => edge.source === this.selectedNodeId);
+    console.log(child_edges);
+    for(let child_edge of child_edges){
+      let childNode = this.extendedNodes.find(node => node.id === child_edge.target);
+      if (childNode) {
+        childNode.isHidden = false;
+      }
+    }
+    this.visibleEdges = [];
+    this.refreshVisibleNodes();
+  }
+
 
 
   public get SelectedNodeText(): string {
@@ -167,7 +230,7 @@ export class DataService {
       selectedNode.label = value;
     }
     this.extendedNodes = [...this.extendedNodes];
-    
+    this.refreshVisibleNodes();
   }
 
   private notificationSubject = new Subject<string>();
@@ -228,6 +291,8 @@ export class DataService {
           id: '1',
           label: 'Node 1',
           isSelected: false,
+          isHidden: false,
+          isChildrenHidden: false,
         });
         this.extendedEdges = [];
         this.clusters = [];
@@ -240,6 +305,7 @@ export class DataService {
       this.clusters = data.clusters;
       this.selectedNodeId = data.selectedNodeId;
       this.extendedNodes = [...this.extendedNodes];
+      this.refreshVisibleNodes();
       this.extendedEdges = [...this.extendedEdges];
       if(this.clusters === undefined){
         this.clusters = [];
@@ -269,6 +335,7 @@ export class DataService {
       }
     }
     this.extendedNodes = [...this.extendedNodes];
+    this.refreshVisibleNodes();
   }
 
   public addNode() {
@@ -283,6 +350,8 @@ export class DataService {
       id: new_node_id.toString(),
       label: `New Node ${new_node_id.toString()}`,
       isSelected: true,
+      isHidden: false,
+      isChildrenHidden: false,
     };
     this.extendedNodes.push(new_node);
 
@@ -309,6 +378,7 @@ export class DataService {
     this.extendedNodes = [...this.extendedNodes];
     this.selectedNodeId = new_node_id.toString();
     console.log(this.extendedEdges);
+    this.refreshVisibleNodes();
   }
 
   // ノードを削除
@@ -350,6 +420,7 @@ export class DataService {
 
     this.extendedEdges = [...this.extendedEdges];
     this.extendedNodes = [...this.extendedNodes];
+    this.refreshVisibleNodes();
 
   }
 
@@ -364,6 +435,7 @@ export class DataService {
           }
         }
         this.extendedNodes = [...this.extendedNodes];
+        this.refreshVisibleNodes();
         return;
       }
     }
@@ -380,10 +452,9 @@ export class DataService {
           }
         }
         this.extendedNodes = [...this.extendedNodes];
-        return;
+        this.refreshVisibleNodes();
       }
     }
-    return;
   }
 
   public MoveSelectedNodeUP () {
@@ -428,5 +499,6 @@ export class DataService {
         }
       }
     }
+    this.refreshVisibleNodes();
   }
 }

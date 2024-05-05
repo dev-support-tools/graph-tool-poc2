@@ -3,7 +3,7 @@
     <ngx-graph
         [view]="[1680, 1200]"
         [layout]="customLayout"
-        [nodes]="DataService.extendedNodes"
+        [nodes]="DataService.nodes"
         [links]="DataService.links"
         [clusters]="DataService.Clusters"
         (select)="onNodeSelect($event)"
@@ -13,9 +13,11 @@
         [miniMapMaxHeight]="200"
         [miniMapMaxWidth]="300"
     >
-    <ng-template #nodeTemplate let-node>      
+    <ng-template #nodeTemplate let-node>
+      <svg:g [attr.visibility]="node.isHidden ? 'hidden' : 'visible'">
         <!-- 選択状態の枠 -->
         <svg:g [attr.visibility]="node.isSelected ? 'visible' : 'hidden'">
+          <!-- 選択枠 -->
           <svg:rect
               [attr.width]="node.dimension.width"
               [attr.height]="node.dimension.height"
@@ -24,11 +26,31 @@
               stroke-width="5"
               stroke="blue"
           />
-          <svg:g [attr.transform]="'translate(' + (node.dimension.width + 5) +', 0)'" (click)="onNodeAdd(node)">
+          <!-- 子ノード閉じるボタン -->
+          <svg:g 
+            [attr.visibility]="node.isSelected && !node.isChildrenHidden ? 'visible' : 'hidden'"
+            [attr.transform]="'translate(-30, 0)'" 
+            (click)="onNodeClose()">
+              <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
+              <path d="M12 4c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8m0-2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13l-4-4h8z"/>
+          </svg:g>
+          <!-- 子ノードを開くボタン -->
+          <svg:g 
+            [attr.visibility]="node.isSelected && node.isChildrenHidden ? 'visible' : 'hidden'"
+            [attr.transform]="'translate(-30, 0)'" 
+            (click)="onNodeOpen()">
+              <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
+              <path d="M10 17l5-5-5-5v10z"/>
+          </svg:g>
+          <!-- ノート追加ボタン -->
+          <svg:g 
+            [attr.transform]="'translate(' + (node.dimension.width + 5) +', 0)'" 
+            (click)="onNodeAdd(node)">
             <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
             <svg:path 
             d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
           </svg:g>
+          <!-- 関連追加ボタン -->
           <svg:g height="24" width="24" viewBox="0 -12 12 12" [attr.transform]="'translate(' + (node.dimension.width + 5) +', 25)'" (click)="onRelateNode(node)">
             <circle cx="12" cy="12" r="12" style="fill: whitesmoke"  />
             <path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/>
@@ -48,6 +70,7 @@
           <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
             {{node.label}}
           </svg:text>
+          </svg:g>
         </svg:g>
       </ng-template>
 
