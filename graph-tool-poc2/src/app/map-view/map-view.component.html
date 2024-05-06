@@ -76,17 +76,17 @@
             (keypress)="onNodeKeypress($event, node)"
           />
           <!-- ノードのラベル -->
-          <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+          <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.nodeType === '2' ? 10 : node.dimension.height / 2">
             {{node.label}}
           </svg:text>
+          <svg:image *ngIf="node.nodeType === '2' && node.images.length > 0"
+            [attr.xlink:href]="node.images[0].url"
+            [attr.x]="20"
+            [attr.y]="node.dimension.height / 5"
+            [attr.width]="70"
+            [attr.height]="70"
+            ></svg:image>
         </svg:g>
-        <svg:image *ngIf="node.nodeType === '2' && node.images.length > 0"
-          [attr.xlink:href]="node.images[0].url"
-          [attr.x]="0"
-          [attr.y]="node.dimension.height"
-          [attr.width]="100"
-          [attr.height]="100"
-          ></svg:image>
         </svg:g>
       </ng-template>
 
