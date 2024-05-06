@@ -1,10 +1,11 @@
 use image::{DynamicImage, RgbaImage};
 use win_screenshot::prelude::*;
 use winapi::um::winuser::GetForegroundWindow;
-use actix_web::{get, web, App, HttpServer, Responder};
+use actix_web::{post, web, App, HttpServer, Responder};
 
-#[get("/api/capture.png")]
-async fn greet() -> impl Responder {
+#[post("/api/capture.png")]
+async fn capture() -> impl Responder {
+    println!("capture");
     let hwnd = unsafe { GetForegroundWindow() as isize };
     let buf = capture_window(hwnd).unwrap();
     let img = DynamicImage::ImageRgba8(
@@ -18,7 +19,7 @@ async fn greet() -> impl Responder {
 #[actix_web::main] 
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
-        App::new().service(greet)
+        App::new().service(capture)
     })
     .bind(("0.0.0.0", 8080))?
     .run()
