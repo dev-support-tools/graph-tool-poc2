@@ -354,9 +354,11 @@ export class DataService {
           images: [],
           nodeType: NodeType.Normal,
         });
+        this.extendedNodes = [...this.extendedNodes];
         this.extendedEdges = [];
         this.clusters = [];
         this.selectedNodeId = '';
+        this.refreshVisibleNodes();
         return;
       }
 
