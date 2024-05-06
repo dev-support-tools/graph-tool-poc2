@@ -25,6 +25,7 @@
               ry="5"
               stroke-width="5"
               stroke="blue"
+              fill="none"
           />
           <!-- 子ノード閉じるボタン -->
           <svg:g 
@@ -66,6 +67,7 @@
                 <path d="M10 17l5-5-5-5v10z"/>
             </svg:g>
             <svg:rect
+            [attr.visibility]="node.nodeType !== '1' ? 'visible' : 'hidden'"
             [attr.width]="node.dimension.width"
             [attr.height]="node.dimension.height"
             rx="5"
@@ -77,7 +79,14 @@
           <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
             {{node.label}}
           </svg:text>
-          </svg:g>
+        </svg:g>
+        <svg:image *ngIf="node.nodeType === '2' && node.images.length > 0"
+          [attr.xlink:href]="node.images[0].url"
+          [attr.x]="0"
+          [attr.y]="node.dimension.height"
+          [attr.width]="100"
+          [attr.height]="100"
+          ></svg:image>
         </svg:g>
       </ng-template>
 

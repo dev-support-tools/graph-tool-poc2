@@ -148,20 +148,15 @@ export class MapViewComponent implements OnInit {
 
   // ノードを選択したときの処理
   onNodeSelect($event: any) {
-    console.log("onNodeSelect");
-    console.log($event.id); 
     // クラスターを選択したとき
     if(this.DataService.IsClusterSelectMode){
-      console.log("クラスター選択");
       this.DataService.AddClusterNode($event.id);
       return;
     }
 
     // サブのノードを選択したとき
     if(this.DataService.IsRelateNode){
-      console.log("サブノード選択");
       if (this.DataService.SelectedNodeId == $event.id) {
-        console.log("同じノード");
         return;
       }
       this.DataService.RelateNode($event.id);
@@ -171,7 +166,6 @@ export class MapViewComponent implements OnInit {
     // ノードを選択したとき
     this.DataService.SelectNode($event.id);
     if (this.DataService.IsAddCommand) {
-      console.log("ノード追加");
       this.DataService.ChangeAddCommandOff();
       this.DataService.addNode();
       return;

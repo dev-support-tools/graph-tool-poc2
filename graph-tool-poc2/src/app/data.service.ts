@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NodeEx } from './map-view/nodeex';
+import { NodeEx, NodeType } from './map-view/nodeex';
 import { EdgeEx, EdgeType } from './map-view/edgeex';
 import { ClusterNode, Edge } from '@swimlane/ngx-graph';
 import { Observable, Subject, map, of } from 'rxjs';
@@ -28,6 +28,7 @@ export class DataService {
       isSelected: false,
       isChildrenHidden: false,
       images: [],
+      nodeType: NodeType.Normal,
     }
   ];
   
@@ -351,6 +352,7 @@ export class DataService {
           isSelected: false,
           isChildrenHidden: false,
           images: [],
+          nodeType: NodeType.Normal,
         });
         this.extendedEdges = [];
         this.clusters = [];
@@ -381,7 +383,7 @@ export class DataService {
     this.notificationSubject.next('Edit');
   }
 
-  public get NotificationObservable() {
+  public NotificationObservable(): Observable<string> {
     return this.notificationSubject.asObservable();
   }
 
@@ -396,6 +398,7 @@ export class DataService {
     }
     this.extendedNodes = [...this.extendedNodes];
     this.refreshVisibleNodes();
+    this.notificationSubject.next('Select');
   }
 
   public addNode() {
@@ -406,13 +409,13 @@ export class DataService {
     
     let selected_node_id = nodeId.toString();
     let new_node_id = this.extendedNodes.length + 1;
-    let new_node = {
+    let new_node: NodeEx = {
       id: new_node_id.toString(),
       label: `New Node ${new_node_id.toString()}`,
       isSelected: true,
-      isHidden: false,
       isChildrenHidden: false,
       images: [],
+      nodeType: NodeType.Normal,
     };
     this.extendedNodes.push(new_node);
 
