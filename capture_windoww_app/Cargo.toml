@@ -1,0 +1,12 @@
+[package]
+name = "capture_windoww_app"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4.5.1"
+image = "0.25.1"
+win-screenshot = "4.0.10"
+winapi = { version = "0.3.9", features = ["winuser", "wingdi"] }
