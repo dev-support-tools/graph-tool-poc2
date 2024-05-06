@@ -5,6 +5,14 @@ import fs from "fs";
 const app = express();
 const port = 8000;
 
+interface Config {
+  captureServerHostName: string;
+}
+
+// 設定ファイルの読み込み
+const config: Config = JSON.parse(fs.readFileSync('config.json'));
+
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,7 +44,7 @@ app.post("/api/opretion/capture", async (req, res) => {
   console.log('capture');
   const path = req.body.path;
 
-  const response = await fetch("http://localhost:8080/api/capture.png", {
+  const response = await fetch(`http://${config.captureServerHostName}:8080/api/capture.png`, {
     method: 'POST',
     headers: {
       'Content-Type': 'image/png',
