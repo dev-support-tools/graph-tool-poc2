@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NodeEx } from './map-view/nodeex';
-import { EdgeEx } from './map-view/edgeex';
+import { EdgeEx, EdgeType } from './map-view/edgeex';
 import { ClusterNode, Edge } from '@swimlane/ngx-graph';
 import { Observable, Subject, map, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -46,8 +46,6 @@ export class DataService {
           edge.strokeWidth = 2;
           edge.strokeDasharray = '3,3';
         }
-
-        console.log(edge);
         let childNode = this.extendedNodes.find(node => node.id === edge.target);
         this.visibleEdges.push(edge);
         if (childNode) {
@@ -84,7 +82,6 @@ export class DataService {
       
       if (this.clusters[i].id == clusterId){
         this.selectedCluster = this.clusters[i];
-        console.log(this.selectedCluster);
       }
     }
   }
@@ -95,7 +92,6 @@ export class DataService {
     return this.selectedCluster?.id !== '';
   }
   public AddCluster() {
-    console.log(this.clusters);
     let clusterLength = this.clusters.length;
     let cluster = {
       id: `cluster${clusterLength}`,
@@ -175,7 +171,7 @@ export class DataService {
       target: new_node_id.toString(),
       label: 'is parent of',
       order: 0,
-      linkType: 1,
+      linkType: EdgeType.Sub,
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.refreshVisibleNodes();
@@ -192,11 +188,9 @@ export class DataService {
 
   // ノードを表示
   public ShowChildren() {
-    console.log('ShowChildren');
     let selectNode = this.extendedNodes.find(node => node.id === this.selectedNodeId);
     if(selectNode){
       selectNode.isChildrenHidden = false;
-      console.log(selectNode);
     }
     this.refreshVisibleNodes();
   }
@@ -265,9 +259,7 @@ export class DataService {
   constructor(private httpClient: HttpClient) { }
 
   public addFile() {
-    console.log('addFile');
     this.httpClient.post('./api/file/add', {}).subscribe((data) => {
-      console.log(data);
     });
   }
 
@@ -278,11 +270,8 @@ export class DataService {
         'Access-Control-Allow-Origin': '*'
       }
     };
-    
-    console.log('loadFileList');
     return this.httpClient.get('./api/file/list', httpOptions).pipe(
       map((data: any) => {
-        console.log(data);
         return data as string[];
       }));
   }
@@ -302,7 +291,6 @@ export class DataService {
       selectedNodeId: this.selectedNodeId
     };
     this.httpClient.post('./api/data/save', requestBody, httpOptions).subscribe((data) => {
-      console.log(data);
     });
   }
 
@@ -318,7 +306,6 @@ export class DataService {
       path: rootPath,
     };
     this.httpClient.post('./api/opretion/capture', requestBody, httpOptions).subscribe((data: any) => {
-      console.log(data);
       const fileName = data.filename as string;
       const url = `api/images/${rootPath}/${fileName}`
       const node = this.extendedNodes.find(node => node.id === this.selectedNodeId);
@@ -332,28 +319,23 @@ export class DataService {
           text: '',
           url: url,
         });
-        console.log(node);
       }
     });
   }
 
   public RemoveImage(fileName: string) {
-    console.log('RemoveImage');
     const rootPath = this.selectedFile.replace('.json', '')
     const requestBody = {
       path: rootPath,
       fileName: fileName,
     };
 
-    console.log('aaaaaa');
     this.httpClient.post('./api/operation/removeimage', requestBody).subscribe(() => {
       const node = this.extendedNodes.find(node => node.id === this.selectedNodeId);
       if (node) {
         node.images = node.images.filter(image => image.filename !== fileName);
-        console.log(node);
       }
     });
-    console.log('bbbbbb');
   }
 
   public Load() : Observable<void> {
@@ -361,7 +343,6 @@ export class DataService {
       fileName: this.selectedFile
     };
     let result = this.httpClient.post('./api/data/load', requestBody).subscribe((data: any) => {
-      console.log(data);
       if (data === null || data === undefined || data.nodes === undefined) {
         this.extendedNodes = [];
         this.extendedNodes.push({
@@ -448,14 +429,13 @@ export class DataService {
       id: new_link_id,
       source: selected_node_id,
       target: new_node_id.toString(),
-      label: 'is parent of',
+      label: '',
       order: edgeOrder,
-      linkType: 0,
+      linkType: EdgeType.Normal,
     };
     this.extendedEdges = [...this.extendedEdges, new_link];
     this.extendedNodes = [...this.extendedNodes];
     this.selectedNodeId = new_node_id.toString();
-    console.log(this.extendedEdges);
     this.refreshVisibleNodes();
   }
 

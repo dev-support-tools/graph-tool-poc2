@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../data.service';
+import { EdgeTypeToString } from '../map-view/edgeex';
 
 @Component({
   selector: 'app-node-edit-view',
@@ -8,6 +9,7 @@ import { DataService } from '../data.service';
 })
 export class NodeEditViewComponent implements OnInit{
 
+  public EdgeTypeToString = EdgeTypeToString;
 
   linkChildrenColumns: string[] = ['operation', 'id', 'order', 'label', 'kinds', 'nodeLabel'];
   linkParentColumns: string[] = ['operation', 'id', 'order', 'label', 'kinds', 'nodeLabel'];
@@ -33,6 +35,4 @@ export class NodeEditViewComponent implements OnInit{
   removeImage(fileName: string){
     this.dataService.RemoveImage(fileName);
   }
-
-
 }
