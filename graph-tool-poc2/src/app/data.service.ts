@@ -27,6 +27,7 @@ export class DataService {
       label: 'Node 1',
       isSelected: false,
       isChildrenHidden: false,
+      images: [],
     }
   ];
   
@@ -305,6 +306,56 @@ export class DataService {
     });
   }
 
+  public Capture(path: string) {
+    const httpOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    };
+    const rootPath = this.selectedFile.replace('.json', '')
+    const requestBody = {
+      path: rootPath,
+    };
+    this.httpClient.post('./api/opretion/capture', requestBody, httpOptions).subscribe((data: any) => {
+      console.log(data);
+      const fileName = data.filename as string;
+      const url = `api/images/${rootPath}/${fileName}`
+      const node = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+      if (node) {
+        if (node.images === undefined) {
+          node.images = [];
+        }
+        node.images.push({
+          filename: fileName,
+          name: '',
+          text: '',
+          url: url,
+        });
+        console.log(node);
+      }
+    });
+  }
+
+  public RemoveImage(fileName: string) {
+    console.log('RemoveImage');
+    const rootPath = this.selectedFile.replace('.json', '')
+    const requestBody = {
+      path: rootPath,
+      fileName: fileName,
+    };
+
+    console.log('aaaaaa');
+    this.httpClient.post('./api/operation/removeimage', requestBody).subscribe(() => {
+      const node = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+      if (node) {
+        node.images = node.images.filter(image => image.filename !== fileName);
+        console.log(node);
+      }
+    });
+    console.log('bbbbbb');
+  }
+
   public Load() : Observable<void> {
     const requestBody = {
       fileName: this.selectedFile
@@ -318,6 +369,7 @@ export class DataService {
           label: 'Node 1',
           isSelected: false,
           isChildrenHidden: false,
+          images: [],
         });
         this.extendedEdges = [];
         this.clusters = [];
@@ -379,6 +431,7 @@ export class DataService {
       isSelected: true,
       isHidden: false,
       isChildrenHidden: false,
+      images: [],
     };
     this.extendedNodes.push(new_node);
 

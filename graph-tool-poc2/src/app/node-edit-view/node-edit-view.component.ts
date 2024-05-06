@@ -26,5 +26,13 @@ export class NodeEditViewComponent implements OnInit{
     });
   }
 
+  addImage(){
+    this.dataService.Capture(this.dataService.SelectedNodeText);
+  }
+
+  removeImage(fileName: string){
+    this.dataService.RemoveImage(fileName);
+  }
+
 
 }

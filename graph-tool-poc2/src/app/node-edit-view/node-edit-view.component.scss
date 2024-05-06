@@ -22,6 +22,29 @@
     width: 250px;
 }
 
+.image-cell{
+    border: 1px solid gray;
+    margin-top: -1px;
+    // margin-bottom: -1px;
+}
+
+.image-header{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.image-image-row{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.image-text {
+    width: 150px;
+}
+
+
 .link-row {
     display: flex;
     align-items: center;
@@ -51,3 +74,4 @@
 .link-content {
     width: 500pt;
 }
+

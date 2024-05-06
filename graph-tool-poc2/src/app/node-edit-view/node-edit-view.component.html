@@ -32,7 +32,29 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> 画像 </mat-panel-title>
               </mat-expansion-panel-header>
+              <input type="button" value="画像取得" (click)="addImage()" />
 
+              <div *ngFor="let image of dataService.getSelectedNode()?.images"
+                class="image-cell"  
+              >
+                <div class="image-header">
+                  <div><input type="text" [(ngModel)]="image.name" /></div>
+                  <div>
+                    {{ image.filename }}
+                  </div>
+                </div>
+                <div class="image-image-row">
+                  <img [src]="image.url" width="200px" height="auto" />
+                  <div class="image-text">
+                    <textarea class="image-text" [(ngModel)]="image.text"></textarea>
+                  </div>
+                </div>
+                <input
+                  type="button"
+                  value="削除"
+                  (click)="removeImage(image.filename)" />
+
+              </div>
             </mat-expansion-panel>
           </mat-accordion>
         </div>
