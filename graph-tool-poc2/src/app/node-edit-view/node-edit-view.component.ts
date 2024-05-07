@@ -43,8 +43,12 @@ export class NodeEditViewComponent implements OnInit{
     });
   }
 
-  addImage(){
+  addImageCapture(){
     this.dataService.Capture(this.dataService.SelectedNodeText);
+  }
+
+  addImage(){
+    this.dataService.addImage();
   }
 
   removeImage(fileName: string){

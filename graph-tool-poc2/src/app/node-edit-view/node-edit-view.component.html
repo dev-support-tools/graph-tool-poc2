@@ -32,19 +32,27 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> 画像 </mat-panel-title>
               </mat-expansion-panel-header>
-              <input type="button" value="画像取得" (click)="addImage()" />
+              <input type="button" value="画像取得" (click)="addImageCapture()" />
+              <input type="button" value="画像追加" (click)="addImage()" />
 
               <div *ngFor="let image of dataService.getSelectedNode()?.images"
-                class="image-cell"  
-              >
+                class="image-cell" >
                 <div class="image-header">
-                  <div><input type="text" [(ngModel)]="image.name" /></div>
-                  <div>
-                    {{ image.filename }}
+                  <div class="image-row">
+                    <div class="image-row-header">ラベル</div>
+                    <div >
+                      <input class="image-row-text" type="text" [(ngModel)]="image.name" />
+                    </div>
+                  </div>
+                  <div class="image-row">
+                    <div class="image-row-header">ファイル名</div>
+                    <div>
+                      <input class="image-row-text" type="text" [(ngModel)]="image.filename" />
+                    </div>
                   </div>
                 </div>
                 <div class="image-image-row">
-                  <img [src]="image.url" width="200px" height="auto" />
+                  <img [src]="'api/images/' + dataService.SelectedFile.replace('.json', '') + '/' + image.filename" width="200px" height="auto" />
                   <div class="image-text">
                     <textarea class="image-text" [(ngModel)]="image.text"></textarea>
                   </div>
@@ -93,7 +101,9 @@
               </ng-container>
               <ng-container matColumnDef="label">
                 <th mat-header-cell *matHeaderCellDef>ラベル</th>
-                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+                <td mat-cell *matCellDef="let element">
+                  <input type="text" [(ngModel)]="element.label" />
+                </td>
               </ng-container>
               <ng-container matColumnDef="kinds">
                 <th mat-header-cell *matHeaderCellDef>種類</th>
@@ -150,7 +160,9 @@
               </ng-container>
               <ng-container matColumnDef="label">
                 <th mat-header-cell *matHeaderCellDef>ラベル</th>
-                <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+                <td mat-cell *matCellDef="let element">
+                  <input type="text" [(ngModel)]="element.label" />
+                </td>
               </ng-container>
               <ng-container matColumnDef="kinds">
                 <th mat-header-cell *matHeaderCellDef>種類</th>

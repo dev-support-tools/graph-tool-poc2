@@ -28,8 +28,21 @@
     // margin-bottom: -1px;
 }
 
-.image-header{
+.image-row{
     display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.image-row-header{
+    width: 80px;
+}
+
+.image-row-text{
+    width: 280px;
+}
+
+.image-header{
     align-items: center;
     margin-bottom: 5px;
 }
@@ -41,7 +54,8 @@
 }
 
 .image-text {
-    width: 150px;
+    width: 350px;
+    height: 180px;
 }
 
 
