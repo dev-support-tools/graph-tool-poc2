@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DagreClusterLayout, DagreLayout, Graph, Orientation } from '@swimlane/ngx-graph';
 import { Node, Edge, ClusterNode, Layout, MiniMapPosition } from '@swimlane/ngx-graph';
 
@@ -26,19 +26,25 @@ export class customLayout extends DagreClusterLayout {
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss']
 })
-export class MapViewComponent implements OnInit {
+export class MapViewComponent implements OnInit, AfterViewInit {
+  @ViewChild('contentRoot') contentRoot: ElementRef | undefined;
 
   public isEdit = false;
 
   public customLayout = new customLayout();
 
   
-  constructor(public readonly DataService: DataService) {
+  constructor(public readonly dataService: DataService) {
 
 
   }
+  ngAfterViewInit(): void {
+    const width = this.contentRoot?.nativeElement.clientWidth;
+    const height = this.contentRoot?.nativeElement.clientHeight;
+    this.dataService.SetWindowSize(width, height);
+  }
   ngOnInit(): void {
-    this.DataService.Load().subscribe(() => {
+    this.dataService.Load().subscribe(() => {
       
     });
   }
@@ -52,7 +58,7 @@ export class MapViewComponent implements OnInit {
   handleKeydownEvent(event: KeyboardEvent) {
 
     if (event.ctrlKey && event.key === 's') {
-      this.DataService.Save();
+      this.dataService.Save();
       // KeyDownイベントを伝播しないようにする
       event.stopPropagation();
       event.preventDefault();
@@ -60,7 +66,7 @@ export class MapViewComponent implements OnInit {
     }
 
     if (event.shiftKey && event.key === 'ArrowLeft') {
-      this.DataService.HiddenChildren();
+      this.dataService.HiddenChildren();
       // KeyDownイベントを伝播しないようにする
       event.stopPropagation();
       event.preventDefault();
@@ -68,7 +74,7 @@ export class MapViewComponent implements OnInit {
     }
 
     if (event.shiftKey && event.key === 'ArrowRight') {
-      this.DataService.ShowChildren();
+      this.dataService.ShowChildren();
       // KeyDownイベントを伝播しないようにする
       event.stopPropagation();
       event.preventDefault();
@@ -89,30 +95,30 @@ export class MapViewComponent implements OnInit {
     }
 
     if (event.key === 'Escape') {
-      this.DataService.ClearInputState();
-      this.DataService.ClearSelectedCluster();
+      this.dataService.ClearInputState();
+      this.dataService.ClearSelectedCluster();
       console.log("Escape")
       return;
     }
-    if (this.DataService.IsInputState) {
+    if (this.dataService.IsInputState) {
       return;
     }
     if(event.key == "F2"){
       this.isEdit = true;
-      this.DataService.ChangeEditState();
+      this.dataService.ChangeEditState();
       return;
     }
     if (event.key === 'Tab') {
-      this.DataService.addNode();
+      this.dataService.addNode();
       return;
     }
     if (event.key === 'ArrowLeft') {
-      this.DataService.MoveSelectedNodeLeft();
+      this.dataService.MoveSelectedNodeLeft();
       return;
     }
     if (event.key === 'ArrowRight') {
-      this.DataService.ShowChildren();
-      this.DataService.MoveSelectedNodeRight();
+      this.dataService.ShowChildren();
+      this.dataService.MoveSelectedNodeRight();
       // KeyDownイベントを伝播しないようにする
       event.stopPropagation();
       event.preventDefault();
@@ -120,25 +126,25 @@ export class MapViewComponent implements OnInit {
     }
 
     if (event.key === 'ArrowUp') {
-      this.DataService.MoveSelectedNodeUP();
+      this.dataService.MoveSelectedNodeUP();
       return;
     }
 
     if (event.key === 'ArrowDown') {
-      this.DataService.ModeNodeDown();
+      this.dataService.ModeNodeDown();
       return;
     }
 
     if (event.key === 'Delete') {
-      this.DataService.deleteNode();
+      this.dataService.deleteNode();
       return;
     }
   }
   addNode() {
-    this.DataService.addNode();
+    this.dataService.addNode();
   }
   selectedNodeId(): any {
-    this.DataService.deleteNode();
+    this.dataService.deleteNode();
   }
 
   // ＋ボタンを押したときの処理
@@ -149,43 +155,43 @@ export class MapViewComponent implements OnInit {
   // ノードを選択したときの処理
   onNodeSelect($event: any) {
     // クラスターを選択したとき
-    if(this.DataService.IsClusterSelectMode){
-      this.DataService.AddClusterNode($event.id);
+    if(this.dataService.IsClusterSelectMode){
+      this.dataService.AddClusterNode($event.id);
       return;
     }
 
     // サブのノードを選択したとき
-    if(this.DataService.IsRelateNode){
-      if (this.DataService.SelectedNodeId == $event.id) {
+    if(this.dataService.IsRelateNode){
+      if (this.dataService.SelectedNodeId == $event.id) {
         return;
       }
-      this.DataService.RelateNode($event.id);
-      this.DataService.ChangeRelateNodeOff();
+      this.dataService.RelateNode($event.id);
+      this.dataService.ChangeRelateNodeOff();
       return;
     }
     // ノードを選択したとき
-    this.DataService.SelectNode($event.id);
-    if (this.DataService.IsAddCommand) {
-      this.DataService.ChangeAddCommandOff();
-      this.DataService.addNode();
+    this.dataService.SelectNode($event.id);
+    if (this.dataService.IsAddCommand) {
+      this.dataService.ChangeAddCommandOff();
+      this.dataService.addNode();
       return;
     }
   }
 
   onNodeOpen() {
-    this.DataService.ShowChildren();
+    this.dataService.ShowChildren();
   }
 
   onNodeClose() {
-    this.DataService.HiddenChildren();
+    this.dataService.HiddenChildren();
   }
 
   onNodeAdd($event: any) {
-    this.DataService.ChangeAddCommandState();
+    this.dataService.ChangeAddCommandState();
   }
 
   onRelateNode($event: any) {
-    this.DataService.ChangeRelateNodeState();
+    this.dataService.ChangeRelateNodeState();
   }
 
   onKeypress($event: any) {

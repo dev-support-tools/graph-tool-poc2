@@ -11,12 +11,29 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DataService {
+
+  private windowWidth = 0;
+  private windowHeight = 0;
   
+  public SetWindowSize(width: number, height: number) {
+    console.log(width);
+    this.windowWidth = width;
+    this.windowHeight = height;
+  }
+
+  public get contentHeight(): number {
+    return this.windowHeight;
+  }
+  
+  public get contentWidth(): number {
+    return this.windowWidth;
+  }
+
   private selectedFile = 'data.json';
   public get SelectedFile(): string {
     return this.selectedFile;
   }
-  
+
   public SelectFile(fileName: string) {
     this.selectedFile = fileName;
   }
@@ -322,6 +339,22 @@ export class DataService {
         });
       }
     });
+  }
+
+  public addImage() {
+    const node = this.extendedNodes.find(node => node.id === this.selectedNodeId);
+    if (node) {
+      if (node.images === undefined) {
+        node.images = [];
+      }
+      node.images.push({
+        filename: '',
+        name: '',
+        text: '',
+        url: '',
+      });
+    }
+
   }
 
   public RemoveImage(fileName: string) {

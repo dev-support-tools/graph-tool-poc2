@@ -1,11 +1,11 @@
 
-<div style="color: skyblue;">
+<div #contentRoot style="color: skyblue;">
     <ngx-graph
-        [view]="[1500, 1200]"
+        [view]="[dataService.contentWidth, dataService.contentHeight]"
         [layout]="customLayout"
-        [nodes]="DataService.nodes"
-        [links]="DataService.links"
-        [clusters]="DataService.Clusters"
+        [nodes]="dataService.nodes"
+        [links]="dataService.links"
+        [clusters]="dataService.Clusters"
         (select)="onNodeSelect($event)"
         [draggingEnabled]="false"
         [animate]="false"

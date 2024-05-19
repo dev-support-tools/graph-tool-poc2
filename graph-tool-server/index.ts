@@ -36,7 +36,10 @@ app.post("/api/data/load", (req, res) => {
   console.log('load data');
   const fileName = req.body.fileName;
   // jsonファイルから読み込み
-  const data = fs.readFileSync(`data/${fileName}`);
+  const filePath = `data/${fileName}`;
+  console.log(filePath);
+  const data = fs.readFileSync(filePath);
+  console.log(data);
   res.send(JSON.parse(data));
 });
 
