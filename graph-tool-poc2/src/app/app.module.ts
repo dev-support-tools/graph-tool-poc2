@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +18,8 @@ import { NodeEditViewComponent } from './node-edit-view/node-edit-view.component
 import { DataService } from './data.service';
 import { ClustersViewComponent } from './clusters-view/clusters-view.component';
 import { FileViewComponent } from './file-view/file-view.component';
+import { NodeContentViewComponent } from './node-content-view/node-content-view.component';
+import { ImageDialogComponent } from './image-dialog/image-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +27,9 @@ import { FileViewComponent } from './file-view/file-view.component';
     MapViewComponent,
     NodeEditViewComponent,
     ClustersViewComponent,
-    FileViewComponent
+    FileViewComponent,
+    NodeContentViewComponent,
+    ImageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +41,9 @@ import { FileViewComponent } from './file-view/file-view.component';
     HttpClientModule,
     MatTableModule,
     MatExpansionModule,
+    DragDropModule,
+    MatGridListModule,
+    MatDialogModule,
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

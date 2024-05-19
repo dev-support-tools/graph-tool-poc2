@@ -1,0 +1,41 @@
+<div class="node-content-view-roow">
+    <div class="node-content-view-left">
+        <table mat-table [dataSource]="images" class="mat-elevation-z8 image-table">
+            <!-- Name Column -->
+            <ng-container matColumnDef="filename" hidden>
+                <th mat-header-cell *matHeaderCellDef hidden>filename</th>
+                <td mat-cell hidden *matCellDef="let element">{{element.filename}}</td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="text">
+                <th mat-header-cell *matHeaderCellDef>text</th>
+                <td mat-cell *matCellDef="let element">{{element.text}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef>image</th>
+                <td mat-cell *matCellDef="let element">
+                    <img [src]="element.url" style="width: 150px;"/></td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+                mat-row
+                (click)="selectRoew(row)"
+                *matRowDef="let row; columns: displayedColumns;"
+            ></tr>
+        </table>
+
+    </div>
+    <div class="node-content-view-right">
+        <img [src]="selectedImageUrl" style="width: 50%;" (click)="onClickImage()"/>
+    </div>
+
+</div>

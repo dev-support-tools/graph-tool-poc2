@@ -2,7 +2,7 @@
     <div class="top">
         
     </div>
-    <div class="content">
+    <div class="content" cdkDropList (cdkDropListDropped)="drop($event)">
         <div class="content-left">
             <div class="file-view">
                 <app-file-view></app-file-view>
@@ -11,11 +11,18 @@
                 <app-clusters-view></app-clusters-view>
             </div>
         </div>
-        <div class="content-center">
-            <app-map-view></app-map-view>
+        <div  class="content-center">
+            <div class="center-upside">
+                <app-map-view></app-map-view>
+            </div>
+            <div class="center-downside">
+                <app-node-content-view></app-node-content-view>
+            </div>
         </div>
         <div class="content-right">
             <app-node-edit-view></app-node-edit-view>    
         </div>
+
     </div>
+
 </div>

@@ -249,6 +249,11 @@ export class DataService {
     return selectedNode;
   }
 
+  public changeSelectedNode(): Observable<string> {
+    return this.notificationSubject.asObservable();
+  }
+
+
   public get SelectedNodeText(): string {
     if (this.selectedNodeId === '') {
       return '';
@@ -290,6 +295,7 @@ export class DataService {
     };
     return this.httpClient.get('./api/file/list', httpOptions).pipe(
       map((data: any) => {
+        console.log(data);
         return data as string[];
       }));
   }

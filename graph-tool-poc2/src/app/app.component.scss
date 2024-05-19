@@ -1,4 +1,12 @@
 
+$right-panel-width: 670px;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
 
 .root {
     height: 100%;
@@ -12,8 +20,10 @@
 
 .content {
     display: flex;
-    height: calc(95%)
+    height: calc(95%);
 }
+
+
 
 .bottom {
     height: calc(0%);
@@ -29,7 +39,7 @@
 
 .file-view {
     padding: 10px;
-    height: calc(47%);
+    height: calc(48.5%);
     border-right: 1px solid gray;;
     border-bottom: 1px solid gray;;
 }
@@ -41,12 +51,28 @@
 }
 
 .content-center {
-    width: 60%;
+    width: calc(100% - 10% - $right-panel-width - 2px);
+}
+
+.center-upside {
+    height: calc(60% - 1px);
+    border-bottom: 1px solid gray;
+    background-color: whitesmoke;
+}
+
+.center-downside {
+    height: calc(40% - 1px);
+    border-bottom: 1px solid gray;
+    background-color: whitesmoke;
 }
 
 .content-right {
     padding: 10px;
-    width: 30%;
+    width: 670px;
     border-left: 1px solid gray;;
     background-color: whitesmoke;
+}
+
+.grid-cell-container {
+
 }

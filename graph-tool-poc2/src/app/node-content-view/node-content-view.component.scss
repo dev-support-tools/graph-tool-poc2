@@ -1,0 +1,36 @@
+
+.node-content-view-roow {
+    display: flex;
+    align-items: top;
+    margin-bottom: 5px;
+}
+
+.node-content-view-left {
+    width: 330px;
+
+
+
+}
+
+.node-content-view-right {
+    width: 100%;
+
+}
+
+.image-table {
+    width: 100%;
+  }
+  
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+.image-row-is-clicked {
+  font-weight: bold;
+}

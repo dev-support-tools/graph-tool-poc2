@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>{{data.image.name}}</h2>
+<mat-dialog-content >
+  <div style="background-color: blue;"></div>
+  <img [src]="data.image.url" style="width: 100%;"/>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button cdkFocusInitial (click)="onOkClick()">Ok</button>
+</mat-dialog-actions>
